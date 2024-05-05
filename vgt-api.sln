@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.6.33723.286
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "vgt-api", "vgt-api.csproj", "{9171D157-7607-4B41-A501-8E7BCE646848}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{9171D157-7607-4B41-A501-8E7BCE646848}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9171D157-7607-4B41-A501-8E7BCE646848}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9171D157-7607-4B41-A501-8E7BCE646848}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9171D157-7607-4B41-A501-8E7BCE646848}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {9CE39E14-AB3E-4BF7-A0B2-1FB58F422997}
+	EndGlobalSection
+EndGlobal
