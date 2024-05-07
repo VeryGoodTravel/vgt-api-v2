@@ -1,4 +1,6 @@
-﻿namespace vgt_api.Models.Requests
+﻿using Microsoft.AspNetCore.Mvc;
+
+namespace vgt_api.Models.Requests
 {
     using System;
     using System.Collections.Generic;
@@ -8,17 +10,12 @@
     using Newtonsoft.Json.Converters;
 
     /// <summary>
-    /// Request to buy specific offer by a user.
+    /// Request to get details of specific offer by id.
     /// </summary>
-    public partial class PurchaseOffer
+    public class OfferRequest
     {
-        [JsonProperty("login")]
-        public string Login { get; set; }
-
         [JsonProperty("offer_id")]
+        [FromQuery(Name = "offer_id")]
         public string OfferId { get; set; }
-
-        [JsonProperty("token")]
-        public string Token { get; set; }
     }
 }

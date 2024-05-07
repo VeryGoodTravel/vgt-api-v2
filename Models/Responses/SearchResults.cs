@@ -6,7 +6,7 @@
     /// <summary>
     /// Contains page of offers, including meta-data about all available pages.
     /// </summary>
-    public partial class GetOfferPage
+    public class SearchResults
     {
         /// <summary>
         /// List of tour offerts

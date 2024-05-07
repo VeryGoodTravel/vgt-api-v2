@@ -5,7 +5,7 @@
     /// <summary>
     /// Login request containing user data required to authenticate.
     /// </summary>
-    public partial class GetOfferPage
+    public class LoginRequest
     {
         [JsonProperty("login")]
         public string Login { get; set; }

@@ -8,11 +8,17 @@
     using Newtonsoft.Json.Converters;
 
     /// <summary>
-    /// Request to get details of specific offer by id.
+    /// Request to buy specific offer by a user.
     /// </summary>
-    public partial class GetOfferDetails
+    public class PurchaseRequest
     {
+        [JsonProperty("login")]
+        public string Login { get; set; }
+
         [JsonProperty("offer_id")]
         public string OfferId { get; set; }
+
+        [JsonProperty("token")]
+        public string Token { get; set; }
     }
 }

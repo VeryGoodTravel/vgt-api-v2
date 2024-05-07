@@ -1,0 +1,15 @@
+﻿services:
+  vgt-api: 
+    container_name: vgt-api
+    image: vgt-api
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - 2138:80
+    networks:
+      - vgt-network
+networks:
+  vgt-network:
+    name: vgt-network
+    external: true
