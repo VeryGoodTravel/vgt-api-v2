@@ -10,7 +10,7 @@
     /// <summary>
     /// Request to buy specific offer by a user.
     /// </summary>
-    public partial class PurchaseOffer
+    public class PurchaseRequest
     {
         [JsonProperty("login")]
         public string Login { get; set; }

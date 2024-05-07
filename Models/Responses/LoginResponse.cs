@@ -5,7 +5,7 @@
     /// <summary>
     /// Response to login request containing JWT token
     /// </summary>
-    public partial class Login
+    public class LoginResponse
     {
         [JsonProperty("token")]
         public string Token { get; set; }

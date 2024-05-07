@@ -5,7 +5,7 @@
     /// <summary>
     /// Describes travel location, both origins and destinations.
     /// </summary>
-    public partial class TravelLocation
+    public class TravelLocation
     {
         [JsonProperty("id")]
         public string Id { get; set; }

@@ -11,7 +11,7 @@
     /// <summary>
     /// Travel filters describing available options to be displayed in search bar.
     /// </summary>
-    public partial class GetFilters
+    public class Filters
     {
         /// <summary>
         /// Available tour destinations
@@ -30,7 +30,13 @@
         /// </summary>
         [JsonProperty("participants")]
         public Participant[] Participants { get; set; }
+
+        /// <summary>
+        /// Date range of available tours.
+        /// </summary>
+        [JsonProperty("dates")]
+        public TravelDateRange Dates { get; set; }
     }
 
-    
+
 }

@@ -5,19 +5,19 @@
     /// <summary>
     /// Describes API envelope. All responses should be wrapped in an envelope.
     /// </summary>
-    public partial class Envelope
+    public class Envelope<T>
     {
         /// <summary>
         /// Message response data should be set here.
         /// </summary>
         [JsonProperty("data")]
-        public object Data { get; set; }
+        public T? Data { get; set; }
 
         /// <summary>
         /// Response error messages and comments should be set here.
         /// </summary>
         [JsonProperty("message")]
-        public string[] Message { get; set; }
+        public string[]? Message { get; set; }
 
         /// <summary>
         /// Describes whether request was handled succesfully.
@@ -30,5 +30,28 @@
         /// </summary>
         [JsonProperty("timestamp")]
         public string Timestamp { get; set; }
+
+        private Envelope()
+        {
+            this.Timestamp = System.DateTime.Now.ToString("dd-MM-yyyy hh:mm:ss");
+        }
+
+        public static Envelope<T> Ok(T data)
+        {
+            return new Envelope<T>
+            {
+                Data = data,
+                Success = true
+            };
+        }
+
+        public static Envelope<T> Error(string message)
+        {
+            return new Envelope<T>
+            {
+                Message = new string[] { message },
+                Success = false
+            };
+        }
     }
 }

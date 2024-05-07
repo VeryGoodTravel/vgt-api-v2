@@ -2,7 +2,7 @@
 
 namespace vgt_api.Models.Common
 {
-    public partial class Participant
+    public class Participant
     {
         [JsonProperty("id")]
         public string Id { get; set; }

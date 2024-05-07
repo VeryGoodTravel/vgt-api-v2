@@ -10,7 +10,7 @@
     /// <summary>
     /// Describes single tour offer including its availability.
     /// </summary>
-    public partial class TravelOffer
+    public class TravelOffer
     {
         [JsonProperty("availability", NullValueHandling = NullValueHandling.Ignore)]
         public bool? Availability { get; set; }
@@ -27,6 +27,9 @@
         [JsonProperty("image", NullValueHandling = NullValueHandling.Ignore)]
         public string Image { get; set; }
 
+        [JsonProperty("maintenance", NullValueHandling = NullValueHandling.Ignore)]
+        public string Maintenance { get; set; }
+
         [JsonProperty("name", NullValueHandling = NullValueHandling.Ignore)]
         public string Name { get; set; }
 
@@ -38,5 +41,11 @@
 
         [JsonProperty("rating", NullValueHandling = NullValueHandling.Ignore)]
         public double? Rating { get; set; }
+
+        [JsonProperty("room", NullValueHandling = NullValueHandling.Ignore)]
+        public string Room { get; set; }
+
+        [JsonProperty("transportation", NullValueHandling = NullValueHandling.Ignore)]
+        public string Transportation { get; set; }
     }
 }
