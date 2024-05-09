@@ -1,4 +1,4 @@
-﻿using Newtonsoft.Json;
+using Newtonsoft.Json;
 
 namespace vgt_api.Models.Common
 {
@@ -11,12 +11,12 @@ namespace vgt_api.Models.Common
         /// Page number
         /// </summary>
         [JsonProperty("page")]
-        public long Page { get; set; }
+        public int Page { get; set; }
 
         /// <summary>
         /// Total amount of offers on all pages (not an amount of available pages)
         /// </summary>
         [JsonProperty("total")]
-        public long Total { get; set; }
+        public int Total { get; set; }
     }
 }

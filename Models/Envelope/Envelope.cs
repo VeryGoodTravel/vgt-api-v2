@@ -1,4 +1,4 @@
-﻿namespace vgt_api.Models.Envelope
+namespace vgt_api.Models.Envelope
 {
     using Newtonsoft.Json;
 
@@ -41,7 +41,8 @@
             return new Envelope<T>
             {
                 Data = data,
-                Success = true
+                Success = true,
+                Message = new string[] { }
             };
         }
 
