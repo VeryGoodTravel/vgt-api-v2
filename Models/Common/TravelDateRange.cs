@@ -1,4 +1,4 @@
-﻿namespace vgt_api.Models.Common
+namespace vgt_api.Models.Common
 {
     using Newtonsoft.Json;
 
@@ -19,6 +19,15 @@
         {
             get => this["start"];
             set => this["start"] = value;
+        }
+        
+        public static TravelDateRange GetExample()
+        {
+            return new TravelDateRange
+            {
+                Start = "01-05-2024",
+                End = "01-01-2025"
+            };
         }
     }
 }

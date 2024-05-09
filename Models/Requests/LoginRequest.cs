@@ -1,4 +1,4 @@
-﻿namespace vgt_api.Models.Requests
+namespace vgt_api.Models.Requests
 {
     using Newtonsoft.Json;
 
@@ -8,7 +8,7 @@
     public class LoginRequest
     {
         [JsonProperty("login")]
-        public string Username { get; set; }
+        public string Login { get; set; }
 
         [JsonProperty("password")]
         public string Password { get; set; }

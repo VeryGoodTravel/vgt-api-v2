@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using vgt_api.Models.Common;
 using vgt_api.Models.Envelope;
@@ -8,7 +8,7 @@ using vgt_api.Models.Responses;
 namespace vgt_api.Controllers
 {
     [ApiController]
-    [Route("PurchaseOffer")]
+    [Route("api/PurchaseOffer")]
     public class PurchaseController : ControllerBase
     {
         private readonly ILogger<PurchaseController> _logger;
@@ -27,7 +27,7 @@ namespace vgt_api.Controllers
                     return Envelope<PurchaseResponse>.Error("Unauthorized");
             } catch (Exception e)
             {
-                return Envelope<PurchaseResponse>.Error(String.Format("Unauthorized: {0}", e.Message));
+                return Envelope<PurchaseResponse>.Error($"Unauthorized: {e.Message}");
             }
 
             PurchaseResponse purchaseResponse = PurchaseOffer();

@@ -1,4 +1,6 @@
-﻿namespace vgt_api.Models.Requests
+using Microsoft.AspNetCore.Mvc;
+
+namespace vgt_api.Models.Requests
 {
     using System;
     using System.Collections.Generic;
@@ -29,12 +31,18 @@
         public string[]? Origins { get; set; }
 
         [JsonProperty("page")]
-        public long Page { get; set; }
+        [BindProperty(Name = "page", SupportsGet = true)]
+        public int Page { get; set; }
 
         /// <summary>
         /// Participant type with count 0 won't be included in the request.
         /// </summary>
         [JsonProperty("participants")]
         public Dictionary<int, int>? Participants { get; set; }
+
+        public override string ToString()
+        {
+            return JsonConvert.SerializeObject(this);
+        }
     }
 }

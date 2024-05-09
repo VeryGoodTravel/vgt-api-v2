@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
@@ -12,8 +12,8 @@ using vgt_api.Models.Responses;
 namespace vgt_api.Controllers
 {
     [ApiController]
-    [Route("Login")]
-    public class LoginController : ControllerBase
+    [Route("api/Login")]
+    public partial class LoginController : ControllerBase
     {
         private readonly ILogger<LoginController> _logger;
 
@@ -27,18 +27,20 @@ namespace vgt_api.Controllers
         {
             try
             {
-                if (!Regex.IsMatch(request.Username, "^s[0-9]{6}$") || request.Password != request.Username.Substring(1))
+                if (!UsernameRegex().IsMatch(request.Login) || 
+                    request.Password != $"password{request.Login[1..]}")
                     return Envelope<LoginResponse>.Error("Ooops, wrong username or password");
             
-                string token = JwtHandler.GenerateJwtToken(request.Username);
-                return Envelope<LoginResponse>.Ok(new LoginResponse
-                {
-                    Token = token
-                });
+                string token = JwtHandler.GenerateJwtToken(request.Login);
+                LoginResponse response = new LoginResponse(token);
+                return Envelope<LoginResponse>.Ok(response);
             } catch (Exception e)
             {
                 return Envelope<LoginResponse>.Error(e.Message);
             }
         }
+
+        [GeneratedRegex("^s[0-9]{6}$")]
+        private static partial Regex UsernameRegex();
     }
 }

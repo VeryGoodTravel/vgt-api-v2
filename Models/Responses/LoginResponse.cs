@@ -1,4 +1,4 @@
-﻿namespace vgt_api.Models.Responses
+namespace vgt_api.Models.Responses
 {
     using Newtonsoft.Json;
 
@@ -9,5 +9,10 @@
     {
         [JsonProperty("token")]
         public string Token { get; set; }
+        
+        public LoginResponse(string token)
+        {
+            Token = token;
+        }
     }
 }

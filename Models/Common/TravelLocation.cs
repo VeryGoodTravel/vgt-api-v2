@@ -15,5 +15,27 @@
 
         [JsonProperty("locations", NullValueHandling = NullValueHandling.Ignore)]
         public TravelLocation[] Locations { get; set; }
+        
+        public static TravelLocation GetExample()
+        {
+            return new TravelLocation
+            {
+                Id = "1",
+                Label = "Germany",
+                Locations = new TravelLocation[]
+                {
+                    new TravelLocation
+                    {
+                        Id = "2",
+                        Label = "Berlin",
+                    },
+                    new TravelLocation
+                    {
+                        Id = "5",
+                        Label = "Munich",
+                    }
+                }
+            };
+        }
     }
 }
