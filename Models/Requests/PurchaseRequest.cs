@@ -1,4 +1,6 @@
-﻿namespace vgt_api.Models.Requests
+﻿using Microsoft.AspNetCore.Mvc;
+
+namespace vgt_api.Models.Requests
 {
     using System;
     using System.Collections.Generic;
@@ -16,7 +18,9 @@
         public string Login { get; set; }
 
         [JsonProperty("offer_id")]
-        public string OfferId { get; set; }
+        public string offer_id { get; set; }
+        
+        public string OfferId => offer_id;
 
         [JsonProperty("token")]
         public string Token { get; set; }

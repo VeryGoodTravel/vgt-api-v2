@@ -1,3 +1,5 @@
+using vgt_api.Models.Requests;
+
 namespace vgt_api.Models.Common
 {
     using System;
@@ -12,6 +14,62 @@ namespace vgt_api.Models.Common
     /// </summary>
     public class TravelOffer
     {
+        public TravelOffer() { }
+
+        public TravelOffer(bool availability,
+            IdFilters filters, Hotel hotel, Room room, Flight flightTo, Flight flightFrom)
+            : this(availability, filters.ToString(),
+                filters.Dates, hotel, room, flightTo, flightFrom) { }
+        
+        public TravelOffer(bool availability,
+            SearchFilters filters, Hotel hotel, Room room, Flight flightTo, Flight flightFrom)
+            : this(availability, new IdFilters(filters, hotel, room, flightTo, flightFrom).ToString(),
+                filters.Dates, hotel, room, flightTo, flightFrom) { }
+        
+        private TravelOffer(bool availability, string id, TravelDateRange dates, Hotel hotel, Room room, Flight flightTo, Flight flightFrom)
+        {
+            this.Availability = availability;
+            this.Date = dates;
+            this.Destination = new TravelLocation()
+            {
+                Id = hotel.Country,
+                Label = hotel.Country,
+                Locations = new[]
+                {
+                    new TravelLocation()
+                    {
+                        Id = hotel.City,
+                        Label = hotel.City,
+                    }
+                }
+            };
+            this.Origin = new TravelLocation()
+            {
+                Id = "Polska",
+                Label = "Polska",
+                Locations = new[]
+                {
+                    new TravelLocation()
+                    {
+                        Id = flightTo.DepartureAirportCode,
+                        Label = flightTo.DepartureAirportName,
+                    }
+                }
+            };
+            this.Id = id;
+            this.Name = hotel.Name;
+            // this.Maintenance = room.Maintenance;
+            this.Price = new Price()
+            {
+                Value = room.Price,
+                Currency = "zł"
+            };
+            // this.Rating = room.Rating;
+            this.Transportation = "Plane";
+            this.Room = room.Name;
+            // this.Image = hotel.Image;
+        }
+        
         [JsonProperty("availability", NullValueHandling = NullValueHandling.Ignore)]
         public bool? Availability { get; set; }
 
@@ -53,7 +111,7 @@ namespace vgt_api.Models.Common
             Guid guid = Guid.NewGuid();
             return new TravelOffer()
             {
-                Availability = true,
+                Availability = false,
                 Date = new TravelDateRange()
                 {
                     Start = "01-05-2024",

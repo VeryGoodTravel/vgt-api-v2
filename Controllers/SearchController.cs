@@ -3,6 +3,7 @@ using vgt_api.Models.Common;
 using vgt_api.Models.Envelope;
 using vgt_api.Models.Requests;
 using vgt_api.Models.Responses;
+using vgt_api.Services;
 
 namespace vgt_api.Controllers
 {
@@ -12,10 +13,12 @@ namespace vgt_api.Controllers
     {
         private const int OffersPerPage = 5;
         private readonly ILogger<SearchController> _logger;
+        private readonly OffersService _offersService;
 
-        public SearchController(ILogger<SearchController> logger)
+        public SearchController(ILogger<SearchController> logger, OffersService offersService)
         {
             _logger = logger;
+            _offersService = offersService;
         }
 
         [HttpGet]
@@ -23,12 +26,16 @@ namespace vgt_api.Controllers
         {
             try
             {
-                TravelOffer[] offers = await GetOffers(request);
+                var results  = 
+                    await _offersService.GetOffers(request.Page*OffersPerPage, OffersPerPage, request);
+
+                var offers = results.Item1;
+                var count = results.Item2;
                 
                 Pages pages = new Pages
                 {
                     Page = request.Page,
-                    Total = (int)Math.Ceiling((decimal)offers.Length / OffersPerPage)
+                    Total = (int)Math.Ceiling((decimal)count / OffersPerPage)
                 };
                 
                 int toSkip = (pages.Page - 1) * OffersPerPage;
@@ -42,6 +49,7 @@ namespace vgt_api.Controllers
             }
             catch (Exception e)
             {
+                _logger.LogError(e, "Error while searching for offers");
                 return Envelope<SearchResults>.Error(e.Message);
             }
         }
@@ -50,11 +58,34 @@ namespace vgt_api.Controllers
         {
             // TODO: Implement search logic
             
+            int children18;
+            int children10;
+            int children3;
+            filters.Participants.TryGetValue(3, out children18);
+            filters.Participants.TryGetValue(2, out children10);
+            filters.Participants.TryGetValue(1, out children3);
+            
             List<TravelOffer> offers = new List<TravelOffer>();
             
             for (int i = 0; i < 11; i++)
             {
-                offers.Add(TravelOffer.GetExample());
+                IdFilters idFilters = new IdFilters
+                {
+                    HotelId = $"hotel_{i}",
+                    RoomId = $"room_{i}",
+                    FlightToId = $"flight_to_{i}",
+                    FlightFromId = $"flight_from_{i}",
+                    Adults = filters.Participants[4],
+                    Children18 = children18,    
+                    Children10 = children10,
+                    Children3 = children3,
+                    Dates = filters.Dates
+                };
+
+                var exampleOffer = TravelOffer.GetExample();
+                exampleOffer.Id = idFilters.ToString();
+                
+                offers.Add(exampleOffer);
             }
 
             return offers.ToArray();

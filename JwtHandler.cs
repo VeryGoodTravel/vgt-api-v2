@@ -13,7 +13,7 @@ namespace vgt_api
             .AddJsonFile("appsettings.json")
             .Build();
 
-        private static string SecretKey = _configuration["Jwt:Key"];
+        private static readonly string SecretKey = _configuration["Jwt:Key"];
 
         public static string GenerateJwtToken(string username)
         {
@@ -28,7 +28,7 @@ namespace vgt_api
 
             var token = new JwtSecurityToken(
                 claims: claims,
-                expires: DateTime.UtcNow.AddMinutes(30),
+                expires: DateTime.UtcNow.AddHours(3),
                 signingCredentials: credentials
             );
 

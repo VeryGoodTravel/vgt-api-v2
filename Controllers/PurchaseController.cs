@@ -1,6 +1,4 @@
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using vgt_api.Models.Common;
 using vgt_api.Models.Envelope;
 using vgt_api.Models.Requests;
 using vgt_api.Models.Responses;
@@ -19,7 +17,7 @@ namespace vgt_api.Controllers
         }
 
         [HttpPost]
-        public Envelope<PurchaseResponse> Purchase([FromBody] PurchaseRequest request)
+        public async Task<Envelope<PurchaseResponse>> Purchase([FromBody] PurchaseRequest request)
         {
             try
             {
@@ -30,18 +28,20 @@ namespace vgt_api.Controllers
                 return Envelope<PurchaseResponse>.Error($"Unauthorized: {e.Message}");
             }
 
-            PurchaseResponse purchaseResponse = PurchaseOffer();
+            PurchaseResponse purchaseResponse = await PurchaseOffer();
             return Envelope<PurchaseResponse>.Ok(purchaseResponse);
         }
 
-        private PurchaseResponse PurchaseOffer()
+        private async Task<PurchaseResponse> PurchaseOffer()
         {
             try
             {
                 // TODO: Implement purchase logic
+                await Task.Delay(100);
                 return new PurchaseResponse
                 {
-                    Success = true
+                    Success = true,
+                    Message = "Offer purchased successfully"
                 };
             } catch (Exception e)
             {

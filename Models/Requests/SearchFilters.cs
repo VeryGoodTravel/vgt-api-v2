@@ -1,4 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
+using vgt_api.Models.Requests.Flights;
+using vgt_api.Models.Requests.Hotels;
 
 namespace vgt_api.Models.Requests
 {
@@ -16,33 +18,42 @@ namespace vgt_api.Models.Requests
     public class SearchFilters
     {
         [JsonProperty("dates")]
-        public TravelDateRange? Dates { get; set; }
+        public TravelDateRange Dates { get; set; }
 
         /// <summary>
         /// If none provided, it means 'any'.
         /// </summary>
         [JsonProperty("destinations")]
-        public string[]? Destinations { get; set; }
+        public List<string>? Destinations { get; set; }
 
         /// <summary>
         /// If none provided, it means 'any'.
         /// </summary>
         [JsonProperty("origins")]
-        public string[]? Origins { get; set; }
+        public List<string>? Origins { get; set; }
 
         [JsonProperty("page")]
-        [BindProperty(Name = "page", SupportsGet = true)]
         public int Page { get; set; }
 
         /// <summary>
         /// Participant type with count 0 won't be included in the request.
         /// </summary>
         [JsonProperty("participants")]
-        public Dictionary<int, int>? Participants { get; set; }
+        public Dictionary<int, int> Participants { get; set; }
 
         public override string ToString()
         {
             return JsonConvert.SerializeObject(this);
+        }
+        
+        public HotelsRequest ToHotelsRequest()
+        {
+            return new HotelsRequest()
+            {
+                Dates = Dates,
+                Cities = Destinations,
+                Participants = Participants
+            };
         }
     }
 }
