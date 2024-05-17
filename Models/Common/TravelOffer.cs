@@ -1,73 +1,74 @@
+using Newtonsoft.Json;
 using vgt_api.Models.Requests;
 
 namespace vgt_api.Models.Common
 {
-    using System;
-    using System.Collections.Generic;
-
-    using System.Globalization;
-    using Newtonsoft.Json;
-    using Newtonsoft.Json.Converters;
-
     /// <summary>
     /// Describes single tour offer including its availability.
     /// </summary>
     public class TravelOffer
     {
-        public TravelOffer() { }
+        private static IConfigurationRoot _configuration = new ConfigurationBuilder()
+            .AddJsonFile("appsettings.json")
+            .Build();
+
+        public TravelOffer()
+        {
+            Image = _configuration["Offer:Image"];
+        }
 
         public TravelOffer(bool availability,
-            IdFilters filters, Hotel hotel, Room room, Flight flightTo, Flight flightFrom)
+            IdFilters filters, Hotel hotel, Room? room, Flight flightTo, Flight flightFrom)
             : this(availability, filters.ToString(),
                 filters.Dates, hotel, room, flightTo, flightFrom) { }
         
         public TravelOffer(bool availability,
-            SearchFilters filters, Hotel hotel, Room room, Flight flightTo, Flight flightFrom)
+            SearchFilters filters, Hotel hotel, Room? room, Flight flightTo, Flight flightFrom)
             : this(availability, new IdFilters(filters, hotel, room, flightTo, flightFrom).ToString(),
                 filters.Dates, hotel, room, flightTo, flightFrom) { }
         
-        private TravelOffer(bool availability, string id, TravelDateRange dates, Hotel hotel, Room room, Flight flightTo, Flight flightFrom)
+        private TravelOffer(bool availability, string id, TravelDateRange dates, Hotel hotel, Room? room, Flight flightTo, Flight flightFrom)
         {
-            this.Availability = availability;
-            this.Date = dates;
-            this.Destination = new TravelLocation()
+            Availability = availability;
+            Date = dates;
+            Destination = new TravelLocation
             {
                 Id = hotel.Country,
                 Label = hotel.Country,
                 Locations = new[]
                 {
-                    new TravelLocation()
+                    new TravelLocation
                     {
                         Id = hotel.City,
                         Label = hotel.City,
                     }
                 }
             };
-            this.Origin = new TravelLocation()
+            Origin = new TravelLocation
             {
                 Id = "Polska",
                 Label = "Polska",
                 Locations = new[]
                 {
-                    new TravelLocation()
+                    new TravelLocation
                     {
                         Id = flightTo.DepartureAirportCode,
                         Label = flightTo.DepartureAirportName,
                     }
                 }
             };
-            this.Id = id;
-            this.Name = hotel.Name;
+            Id = id;
+            Name = hotel.Name;
             // this.Maintenance = room.Maintenance;
-            this.Price = new Price()
+            Price = new Price
             {
-                Value = room.Price,
+                Value = room?.Price ?? 0,
                 Currency = "zł"
             };
             // this.Rating = room.Rating;
-            this.Transportation = "Plane";
-            this.Room = room.Name;
-            // this.Image = hotel.Image;
+            Transportation = "Plane";
+            Room = room?.Name ?? "Brak informacji";
+            Image = _configuration["Offer:Image"];
         }
         
         [JsonProperty("availability", NullValueHandling = NullValueHandling.Ignore)]
@@ -109,34 +110,34 @@ namespace vgt_api.Models.Common
         public static TravelOffer GetExample()
         {
             Guid guid = Guid.NewGuid();
-            return new TravelOffer()
+            return new TravelOffer
             {
-                Availability = false,
-                Date = new TravelDateRange()
+                Availability = true,
+                Date = new TravelDateRange
                 {
                     Start = "01-05-2024",
                     End = "01-06-2024"
                 },
-                Destination = new TravelLocation()
+                Destination = new TravelLocation
                 {
                     Id = "10",
                     Label = "United States",
                     Locations = new[]
                     {
-                        new TravelLocation()
+                        new TravelLocation
                         {
                             Id = "20",
                             Label = "New York",
                         }
                     }
                 },
-                Origin = new TravelLocation()
+                Origin = new TravelLocation
                 {
                     Id = "11",
                     Label = "Poland",
                     Locations = new[]
                     {
-                        new TravelLocation()
+                        new TravelLocation
                         {
                             Id = "21",
                             Label = "Warsaw",
@@ -146,16 +147,14 @@ namespace vgt_api.Models.Common
                 Id = guid.ToString(),
                 Name = guid.ToString(),
                 Maintenance = "All inclusive",
-                Price = new Price()
+                Price = new Price
                 {
                     Value = 3000,
                     Currency = "USD"
                 },
                 Rating = 4.5,
                 Transportation = "Plane",
-                Room = "Double",
-                Image =
-                    "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAIAQMAAAD+wSzIAAAABlBMVEX///+/v7+jQ3Y5AAAADklEQVQI12P4AIX8EAgALgAD/aNpbtEAAAAASUVORK5CYII"
+                Room = "Double"
             };
         }
     }

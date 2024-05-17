@@ -49,7 +49,6 @@ namespace vgt_api.Controllers
             }
             catch (Exception e)
             {
-                _logger.LogError(e, "Error while searching for offers");
                 return Envelope<SearchResults>.Error(e.Message);
             }
         }

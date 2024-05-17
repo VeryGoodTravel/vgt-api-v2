@@ -23,28 +23,28 @@ public class Participants
             {
                 new ParticipantOption
                 {
-                    Id = ParticipantsEnum.Adult.ToString(),
+                    Id = ((int)ParticipantsEnum.Adult).ToString(),
                     Min = 1,
                     Max = 10,
                     Label = "Dorosły"
                 },
                 new ParticipantOption
                 {
-                    Id = ParticipantsEnum.Child18.ToString(),
+                    Id = ((int)ParticipantsEnum.Child18).ToString(),
                     Min = 0,
                     Max = 4,
                     Label = "Dziecko < 18 lat"
                 },
                 new ParticipantOption
                 {
-                    Id = ParticipantsEnum.Child10.ToString(),
+                    Id = ((int)ParticipantsEnum.Child18).ToString(),
                     Min = 0,
                     Max = 3,
                     Label = "Dziecko < 10 lat"
                 },
                 new ParticipantOption
                 {
-                    Id = ParticipantsEnum.Child3.ToString(),
+                    Id = ((int)ParticipantsEnum.Child3).ToString(),
                     Min = 0,
                     Max = 2,
                     Label = "Dziecko < 3 lat"

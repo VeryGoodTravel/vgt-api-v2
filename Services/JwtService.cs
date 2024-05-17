@@ -1,21 +1,22 @@
-﻿using System;
-using System.IdentityModel.Tokens.Jwt;
+﻿using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 using Microsoft.IdentityModel.Tokens;
-using System.Configuration;
 
-namespace vgt_api
+namespace vgt_api.Services
 {
-    public class JwtHandler
-    {
-        private static IConfigurationRoot _configuration = new ConfigurationBuilder()
-            .AddJsonFile("appsettings.json")
-            .Build();
-
-        private static readonly string SecretKey = _configuration["Jwt:Key"];
-
-        public static string GenerateJwtToken(string username)
+    public class JwtService
+    { 
+        private readonly ConfigurationService _configurationService;
+        
+        public JwtService(ConfigurationService configurationService)
+        {
+            _configurationService = configurationService;
+        }
+        
+        private string SecretKey => _configurationService.SecretKey;
+        
+        public string GenerateJwtToken(string username)
         {
             var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(SecretKey));
             var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
@@ -35,7 +36,7 @@ namespace vgt_api
             return new JwtSecurityTokenHandler().WriteToken(token);
         }
 
-        public static bool VerifyJwtToken(string token)
+        public bool VerifyJwtToken(string token)
         {
             var tokenHandler = new JwtSecurityTokenHandler();
             var key = Encoding.ASCII.GetBytes(SecretKey);

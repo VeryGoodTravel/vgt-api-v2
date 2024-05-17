@@ -44,9 +44,9 @@ public class OffersService
         FlightRequest flightFromRequest = new FlightRequest(filters.FlightFromId, numberOfParticipants);
         var flightFrom = await _flightService.GetFlight(flightFromRequest);
         
-        var available = room!.Available && flightTo.Available && flightFrom.Available;
+        var available = flightTo.Available && flightFrom.Available && room != null;
         
-        return new TravelOffer(available, filters, hotel, room!, flightTo, flightFrom);
+        return new TravelOffer(available, filters, hotel, room, flightTo, flightFrom);
     }
 
     private async Task<Tuple<Flight, Flight>?> GetHotelPairOfFlights(FlightsRequest flightsToRequest, FlightsRequest flightsFromRequest)

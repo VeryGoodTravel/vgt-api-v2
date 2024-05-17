@@ -13,7 +13,7 @@ public class FlightService
     
     public async Task<DepartureAirports> GetDepartureAirports()
     {
-        return new DepartureAirports();
+        return new DepartureAirports(){ Airports = new List<Airport>() };
     }
     
     public async Task<FlightResponse> GetFlight(FlightRequest request)

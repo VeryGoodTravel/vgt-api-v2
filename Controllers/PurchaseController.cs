@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using vgt_api.Models.Envelope;
 using vgt_api.Models.Requests;
 using vgt_api.Models.Responses;
+using vgt_api.Services;
 
 namespace vgt_api.Controllers
 {
@@ -10,10 +11,12 @@ namespace vgt_api.Controllers
     public class PurchaseController : ControllerBase
     {
         private readonly ILogger<PurchaseController> _logger;
+        private readonly JwtService _jwtService;
 
-        public PurchaseController(ILogger<PurchaseController> logger)
+        public PurchaseController(ILogger<PurchaseController> logger, JwtService jwtService)
         {
             _logger = logger;
+            _jwtService = jwtService;
         }
 
         [HttpPost]
@@ -21,7 +24,7 @@ namespace vgt_api.Controllers
         {
             try
             {
-                if (!JwtHandler.VerifyJwtToken(request.Token))
+                if (!_jwtService.VerifyJwtToken(request.Token))
                     return Envelope<PurchaseResponse>.Error("Unauthorized");
             } catch (Exception e)
             {

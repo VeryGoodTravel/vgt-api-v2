@@ -12,6 +12,8 @@ builder.Services.AddSwaggerGen();
 
 // Register services
 builder.Services.AddSingleton<HttpClient>();
+builder.Services.AddSingleton<ConfigurationService>();
+builder.Services.AddSingleton<JwtService>();
 builder.Services.AddSingleton<HotelService>();
 builder.Services.AddSingleton<FlightService>();
 builder.Services.AddSingleton<OffersService>();

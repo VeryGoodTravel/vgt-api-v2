@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using vgt_api.Models.Common;
 using vgt_api.Models.Envelope;
 using vgt_api.Models.Responses;
+using vgt_api.Services;
 
 namespace vgt_api.Controllers
 {
@@ -10,25 +11,30 @@ namespace vgt_api.Controllers
     public class FiltersController : ControllerBase
     {
         private readonly ILogger<FiltersController> _logger;
+        private readonly FlightService _flightService;
+        private readonly HotelService _hotelService;
 
-        public FiltersController(ILogger<FiltersController> logger)
+        public FiltersController(ILogger<FiltersController> logger, 
+            FlightService flightService,
+            HotelService hotelService)
         {
             _logger = logger;
+            _flightService = flightService;
+            _hotelService = hotelService;
         }
 
         [HttpGet]
-        public Envelope<Filters> GetFilters()
+        public async Task<Envelope<Filters>> GetFilters()
         {
             try
             {
                 Filters filters = new Filters
                 {
-                    Origins = GetOrigins(),
-                    Destinations = GetDestinations(),
+                    Origins = await GetOrigins(),
+                    Destinations = await GetDestinations(),
                     Dates = GetDates(),
                     Participants = GetParticipants()
                 };
-                // TODO: Implement filters logic
                 return Envelope<Filters>.Ok(filters);
             } catch (Exception e)
             {
@@ -48,16 +54,28 @@ namespace vgt_api.Controllers
             return TravelDateRange.GetExample();
         }
 
-        private TravelLocation[] GetDestinations()
+        private async Task<TravelLocation[]> GetDestinations()
         {
-            // TODO: Implement destinations logic
-            return new[] { TravelLocation.GetExample() };
+            var response = await _hotelService.GetLocations();
+            
+            return response.Locations.ToArray();
         }
 
-        private TravelLocation[] GetOrigins()
+        private async Task<TravelLocation[]> GetOrigins()
         {
-            // TODO: Implement origins logic
-            return new[] { TravelLocation.GetExample() };
+            var response = await _flightService.GetDepartureAirports();
+            
+            var airportsInPoland = new TravelLocation()
+            {
+                Id = "Polska", Label = "Polska",
+                Locations = response.Airports.Select(airport => new TravelLocation()
+                {
+                    Id = airport.AirportCode,
+                    Label = airport.AirportName
+                }).ToArray()
+            };
+            
+            return new[] { airportsInPoland };
         }
     }
     
