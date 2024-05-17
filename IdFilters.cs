@@ -6,9 +6,13 @@ namespace vgt_api;
 public class IdFilters
 {
     public string HotelId { get; set; }
+    public string HotelName { get; set; }
     public string RoomId { get; set; }
+    public string RoomName { get; set; }
     public string FlightToId { get; set; }
     public string FlightFromId { get; set; }
+    
+    public string City { get; set; }
         
     public TravelDateRange Dates { get; set; }
     public int Adults { get; set; }
@@ -18,8 +22,12 @@ public class IdFilters
         
     public override string ToString()
     {
+        var hotelName = HotelName.Replace(" ", "_");
+        var roomName = RoomName.Replace(" ", "_");
+        var city = City.Replace(" ", "_");
+        
         return
-            $"H{HotelId}R{RoomId}T{FlightToId}F{FlightFromId}S{Dates.Start}E{Dates.End}A{Adults}Y{Children18}C{Children10}I{Children3}";
+            $"{HotelId}${hotelName}${RoomId}${roomName}${city}${FlightToId}${FlightFromId}${Dates.Start}${Dates.End}${Adults}${Children18}${Children10}${Children3}";
     }
     
     public IdFilters() {}
@@ -44,24 +52,29 @@ public class IdFilters
         Children18 = children18;
         Children10 = children10;
         Children3 = children3;
+
+        City = flightTo.ArrivalAirportName;
+        HotelName = hotel.Name;
+        RoomName = room.Name;
     }
         
     public static IdFilters FromId(string id)
     {
-        var filters = new IdFilters();
-        
-        var parts = id.Split('H', 'R', 'T', 'F', 'S', 'E', 'A', 'Y', 'C', 'I');
-        
-        filters.HotelId = parts[1];
-        filters.RoomId = parts[2];
-        filters.FlightToId = parts[3];
-        filters.FlightFromId = parts[4];
-        filters.Dates = new TravelDateRange { Start = parts[5], End = parts[6] };
-        filters.Adults = int.Parse(parts[7]);
-        filters.Children18 = int.Parse(parts[8]);
-        filters.Children10 = int.Parse(parts[9]);
-        filters.Children3 = int.Parse(parts[10]);
-        
-        return filters;
+        var parts = id.Split('$');
+        return new IdFilters
+        {
+            HotelId = parts[0],
+            HotelName = parts[1].Replace("_", " "),
+            RoomId = parts[2],
+            RoomName = parts[3].Replace("_", " "),
+            City = parts[4].Replace("_", " "),
+            FlightToId = parts[5],
+            FlightFromId = parts[6],
+            Dates = new TravelDateRange{ Start = parts[7], End = parts[8] },
+            Adults = int.Parse(parts[9]),
+            Children18 = int.Parse(parts[10]),
+            Children10 = int.Parse(parts[11]),
+            Children3 = int.Parse(parts[12])
+        };
     }
 }

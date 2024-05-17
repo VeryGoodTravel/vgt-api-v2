@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using vgt_api.Models.Envelope;
 using vgt_api.Models.Requests;
 using vgt_api.Models.Responses;
+using vgt_api.Models.Rabbit;
 using vgt_api.Services;
 
 namespace vgt_api.Controllers
@@ -31,14 +32,30 @@ namespace vgt_api.Controllers
                 return Envelope<PurchaseResponse>.Error($"Unauthorized: {e.Message}");
             }
 
-            PurchaseResponse purchaseResponse = await PurchaseOffer();
+            PurchaseResponse purchaseResponse = await PurchaseOffer(request.OfferId);
             return Envelope<PurchaseResponse>.Ok(purchaseResponse);
         }
 
-        private async Task<PurchaseResponse> PurchaseOffer()
+        private async Task<PurchaseResponse> PurchaseOffer(string offerId)
         {
             try
             {
+                var filters = IdFilters.FromId(offerId);
+                
+                var transaction = new Transaction() {
+                    TransactionId = Guid.NewGuid(),
+                    OfferId = offerId,
+                    BookFrom = DateTime.Parse(filters.Dates.Start),
+                    BookTo = DateTime.Parse(filters.Dates.End),
+                    TripFrom = filters.City,
+                    HotelName = filters.HotelName,
+                    RoomType = filters.RoomName,
+                    AdultCount = filters.Adults,
+                    OldChildren = filters.Children18,
+                    MidChildren = filters.Children10,
+                    LesserChildren = filters.Children3,
+                };
+                
                 // TODO: Implement purchase logic
                 await Task.Delay(100);
                 return new PurchaseResponse
