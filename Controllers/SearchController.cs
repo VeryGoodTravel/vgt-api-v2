@@ -53,7 +53,7 @@ namespace vgt_api.Controllers
             }
         }
 
-        private async Task<TravelOffer[]> GetOffers(SearchFilters filters)
+        private TravelOffer[] GetOffers(SearchFilters filters)
         {
             // TODO: Implement search logic
             
@@ -71,7 +71,10 @@ namespace vgt_api.Controllers
                 IdFilters idFilters = new IdFilters
                 {
                     HotelId = $"hotel_{i}",
+                    HotelName = $"hotel name {i}",
                     RoomId = $"room_{i}",
+                    RoomName = $"room name {i}",
+                    City = $"location {i}",
                     FlightToId = $"flight_to_{i}",
                     FlightFromId = $"flight_from_{i}",
                     Adults = filters.Participants[4],

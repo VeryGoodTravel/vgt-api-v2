@@ -57,12 +57,32 @@ namespace vgt_api.Controllers
                 };
                 
                 // TODO: Implement purchase logic
-                await Task.Delay(100);
-                return new PurchaseResponse
+                // listen for replay with same transactionId
+
+                var sagaResponse = new SagaReply()
                 {
-                    Success = true,
-                    Message = "Offer purchased successfully"
+                    Answer = SagaAnswer.Success
                 };
+                if (sagaResponse.Answer == SagaAnswer.Success)
+                {
+                    return new PurchaseResponse
+                    {
+                        Success = true,
+                        Message = "Offer purchased successfully"
+                    };
+                }
+                
+                {
+                    return new PurchaseResponse
+                    {
+                        Success = false,
+                        Message = "Offer purchase failed"
+                    };
+                }
+                
+                
+                
+                
             } catch (Exception e)
             {
                 return new PurchaseResponse
