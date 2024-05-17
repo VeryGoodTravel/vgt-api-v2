@@ -38,7 +38,6 @@ public class HotelService
             query["cities"] = JsonConvert.SerializeObject(request.Cities);
         query["participants"] = JsonConvert.SerializeObject(request.Participants);
         builder.Query = query.ToString();
-        _logger.LogInformation($"Requesting hotels: {builder}");
         var response = await _httpClient.GetAsync(builder.ToString());
         var content = await response.Content.ReadAsStringAsync();
         
