@@ -11,11 +11,14 @@ public class FlightService
 {
     private readonly HttpClient _httpClient;
     private readonly ConfigurationService _configurationService;
+    private readonly ILogger<FlightService> _logger;
     
-    public FlightService(ConfigurationService configurationService, HttpClient httpClient)
+    public FlightService(ConfigurationService configurationService, HttpClient httpClient, 
+        ILogger<FlightService> logger)
     {
         _configurationService = configurationService;
         _httpClient = httpClient;
+        _logger = logger;
     }
     
     public async Task<DepartureAirports> GetDepartureAirports()

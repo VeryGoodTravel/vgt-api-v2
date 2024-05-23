@@ -79,10 +79,6 @@ namespace vgt_api.Controllers
                         Message = "Offer purchase failed"
                     };
                 }
-                
-                
-                
-                
             } catch (Exception e)
             {
                 return new PurchaseResponse
