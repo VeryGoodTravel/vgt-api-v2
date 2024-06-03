@@ -54,8 +54,8 @@ public class OffersService
 
     private async Task<Tuple<Flight, Flight>?> GetHotelPairOfFlights(FlightsRequest flightsToRequest, FlightsRequest flightsFromRequest)
     {
-        _logger.LogInformation(JsonConvert.SerializeObject(flightsToRequest));
-        _logger.LogInformation(JsonConvert.SerializeObject(flightsFromRequest));
+        //_logger.LogInformation(JsonConvert.SerializeObject(flightsToRequest));
+       // _logger.LogInformation(JsonConvert.SerializeObject(flightsFromRequest));
         
         var flightsToResponse = await _flightService.GetFlights(flightsToRequest);
         var flightsFromResponse = await _flightService.GetFlights(flightsFromRequest);
@@ -103,8 +103,16 @@ public class OffersService
         _logger.LogInformation($"count {hotelsResponse.Hotels.Count}");
         foreach (var hotel in hotelsResponse.Hotels.ToList())
         {   
-            flightsToRequest.ArrivalAirportCodes.Add(hotel.AirportCode);
-            flightsFromRequest.DepartureAirportCodes.Add(hotel.AirportCode);
+
+            var hotelAirports = new List<string>() { hotel.AirportCode };
+            
+            _logger.LogInformation(JsonConvert.SerializeObject(hotelAirports));
+            
+            flightsToRequest.ArrivalAirportCodes = hotelAirports;
+            flightsFromRequest.DepartureAirportCodes = hotelAirports;
+            
+            //flightsToRequest.ArrivalAirportCodes.Add(hotel.AirportCode);
+            //flightsFromRequest.DepartureAirportCodes.Add(hotel.AirportCode);
 
             _logger.LogInformation("departure:");
             _logger.LogInformation(JsonConvert.SerializeObject(flightsFromRequest.DepartureAirportCodes));
