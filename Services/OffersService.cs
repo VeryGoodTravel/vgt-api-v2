@@ -1,3 +1,4 @@
+using Newtonsoft.Json;
 using vgt_api.Models.Common;
 using vgt_api.Models.Requests;
 using vgt_api.Models.Requests.Flights;
@@ -9,11 +10,13 @@ public class OffersService
 {
     private readonly HotelService _hotelService;
     private readonly FlightService _flightService;
+    private readonly ILogger<OffersService> _logger;
     
-    public OffersService(HotelService hotelService, FlightService flightService)
+    public OffersService(HotelService hotelService, FlightService flightService, ILogger<OffersService> logger)
     {
         _hotelService = hotelService;
         _flightService = flightService;
+        _logger = logger;
     }
     
     public async Task<TravelOffer> GetOffer(string id)
@@ -51,6 +54,9 @@ public class OffersService
 
     private async Task<Tuple<Flight, Flight>?> GetHotelPairOfFlights(FlightsRequest flightsToRequest, FlightsRequest flightsFromRequest)
     {
+        _logger.LogInformation(JsonConvert.SerializeObject(flightsToRequest));
+        _logger.LogInformation(JsonConvert.SerializeObject(flightsFromRequest));
+        
         var flightsToResponse = await _flightService.GetFlights(flightsToRequest);
         var flightsFromResponse = await _flightService.GetFlights(flightsFromRequest);
         
@@ -72,7 +78,7 @@ public class OffersService
     {
         var hotelsRequest = filters.ToHotelsRequest();
         var numberOfParticipants = filters.Participants.Sum(x => x.Value);
-        
+
         var flightsToRequest = new FlightsRequest()
         {
             DepartureDate = filters.Dates.Start,
@@ -88,11 +94,16 @@ public class OffersService
         };
         
         var hotelsResponse = await _hotelService.GetHotels(hotelsRequest);
+
+        _logger.LogInformation(JsonConvert.SerializeObject(hotelsResponse));
         
         var cachedFlights = new Dictionary<string, Tuple<Flight, Flight>?>();
         foreach (var hotel in hotelsResponse.Hotels)
         {
             var hotelAirports = new List<string>() { hotel.AirportCode };
+            
+            _logger.LogInformation(JsonConvert.SerializeObject(hotelAirports));
+            
             flightsToRequest.ArrivalAirportCodes = hotelAirports;
             flightsFromRequest.DepartureAirportCodes = hotelAirports;
 

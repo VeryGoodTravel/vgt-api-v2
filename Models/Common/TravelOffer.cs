@@ -62,7 +62,7 @@ namespace vgt_api.Models.Common
             // this.Maintenance = room.Maintenance;
             Price = new Price
             {
-                Value = room?.Price ?? 0,
+                Value = (room?.Price ?? 0) + flightTo.Price + flightFrom.Price,
                 Currency = "zł"
             };
             // this.Rating = room.Rating;

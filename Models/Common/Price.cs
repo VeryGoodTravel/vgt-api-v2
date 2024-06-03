@@ -8,6 +8,6 @@ namespace vgt_api.Models.Common
         public string Currency { get; set; }
 
         [JsonProperty("value")]
-        public double Value { get; set; }
+        public decimal Value { get; set; }
     }
 }

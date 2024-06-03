@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 using vgt_api.Models.Common;
 using vgt_api.Models.Envelope;
 using vgt_api.Models.Requests;
@@ -49,6 +50,7 @@ namespace vgt_api.Controllers
             }
             catch (Exception e)
             {
+                _logger.LogInformation(JsonConvert.SerializeObject(request));
                 return Envelope<SearchResults>.Error(e.Message);
             }
         }

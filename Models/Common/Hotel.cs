@@ -5,7 +5,7 @@ namespace vgt_api.Models.Common;
 
 public class Hotel
 {
-    [JsonProperty("hotel_id")]
+    [JsonProperty("hotelId")]
     public string HotelId { get; set; }
     
     [JsonProperty("name")]
@@ -17,7 +17,7 @@ public class Hotel
     [JsonProperty("country")]
     public string Country { get; set; }
     
-    [JsonProperty("airport_code")]
+    [JsonProperty("airportCode")]
     public string AirportCode { get; set; }
     
     [JsonProperty("rooms")]

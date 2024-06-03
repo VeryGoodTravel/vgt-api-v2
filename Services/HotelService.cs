@@ -47,6 +47,8 @@ public class HotelService
             start = DateTime.ParseExact(request.Dates.Start, "dd-mm-yyyy", null),
             end = DateTime.ParseExact(request.Dates.End, "dd-mm-yyyy", null)
         };
+
+        _logger.LogInformation(JsonConvert.SerializeObject(request));
         
         var json = new
         {
@@ -65,23 +67,16 @@ public class HotelService
                 MediaTypeNames.Application.Json
             )
         };
-        
+
         _logger.LogInformation("Sending request to hotel api");
-        _logger.LogInformation(JsonConvert.SerializeObject(httpRequest));
         _logger.LogInformation(JsonConvert.SerializeObject(json));
-        
+
         var response = await _httpClient.SendAsync(httpRequest);
-        
-        // var builder = new UriBuilder(_configurationService.HotelApiUrl + "/hotels");
-        // var query = HttpUtility.ParseQueryString(builder.Query);
-        // query["dates"] = JsonConvert.SerializeObject(request.Dates);
-        // if (request.Cities != null)
-        //     query["cities"] = JsonConvert.SerializeObject(request.Cities);
-        // query["participants"] = JsonConvert.SerializeObject(request.Participants);
-        // builder.Query = query.ToString();
         
         var content = await response.Content.ReadAsStringAsync();
         var hotels = JsonConvert.DeserializeObject<List<Hotel>>(content);
+        
+        _logger.LogInformation(JsonConvert.SerializeObject(hotels));
         
         return new HotelsResponse { Hotels = hotels };
     }

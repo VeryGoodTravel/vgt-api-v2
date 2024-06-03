@@ -24,7 +24,7 @@ namespace vgt_api.Models.Requests
         /// If none provided, it means 'any'.
         /// </summary>
         [JsonProperty("destinations")]
-        public List<string>? Destinations { get; set; }
+        public Dictionary<string,List<string>>? Destinations { get; set; }
 
         /// <summary>
         /// If none provided, it means 'any'.
@@ -51,7 +51,7 @@ namespace vgt_api.Models.Requests
             return new HotelsRequest()
             {
                 Dates = Dates,
-                Cities = Destinations,
+                Cities = Destinations[""],
                 Participants = Participants
             };
         }
