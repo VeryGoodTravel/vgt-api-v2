@@ -27,7 +27,7 @@ namespace vgt_api.Controllers
         {
             try
             {
-                //_logger.LogInformation(JsonConvert.SerializeObject(request));
+                _logger.LogInformation(JsonConvert.SerializeObject(request));
                 var results  = 
                     await _offersService.GetOffers(request.Page*OffersPerPage, OffersPerPage, request);
 
