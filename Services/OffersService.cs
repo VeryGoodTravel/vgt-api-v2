@@ -99,7 +99,7 @@ public class OffersService
         
         var cachedFlights = new Dictionary<string, Tuple<Flight, Flight>?>();
         _logger.LogInformation($"count {hotelsResponse.Hotels.Count}");
-        foreach (var hotel in hotelsResponse.Hotels)
+        foreach (var hotel in hotelsResponse.Hotels.ToList())
         {   
             flightsToRequest.ArrivalAirportCodes.Add(hotel.AirportCode);
             flightsFromRequest.DepartureAirportCodes.Add(hotel.AirportCode);
