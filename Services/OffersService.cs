@@ -82,7 +82,7 @@ public class OffersService
         var flightsToRequest = new FlightsRequest()
         {
             DepartureDate = filters.Dates.Start,
-            ArrivalAirportCodes = [],
+            ArrivalAirportCodes = new(),
             DepartureAirportCodes = filters.Origins,
             NumberOfPassengers = numberOfParticipants
         };
@@ -91,7 +91,7 @@ public class OffersService
         {
             DepartureDate = filters.Dates.End,
             ArrivalAirportCodes = filters.Origins,
-            DepartureAirportCodes = [],
+            DepartureAirportCodes = new(),
             NumberOfPassengers = numberOfParticipants
         };
         
