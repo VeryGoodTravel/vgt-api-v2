@@ -82,6 +82,7 @@ public class OffersService
         var flightsToRequest = new FlightsRequest()
         {
             DepartureDate = filters.Dates.Start,
+            ArrivalAirportCodes = [],
             DepartureAirportCodes = filters.Origins,
             NumberOfPassengers = numberOfParticipants
         };
@@ -90,12 +91,13 @@ public class OffersService
         {
             DepartureDate = filters.Dates.End,
             ArrivalAirportCodes = filters.Origins,
+            DepartureAirportCodes = [],
             NumberOfPassengers = numberOfParticipants
         };
         
         var hotelsResponse = await _hotelService.GetHotels(hotelsRequest);
 
-        _logger.LogInformation(JsonConvert.SerializeObject(hotelsResponse));
+       // _logger.LogInformation(JsonConvert.SerializeObject(hotelsResponse));
         
         var cachedFlights = new Dictionary<string, Tuple<Flight, Flight>?>();
         _logger.LogInformation($"count {hotelsResponse.Hotels.Count}");
