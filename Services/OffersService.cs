@@ -105,7 +105,7 @@ public class OffersService
             flightsFromRequest.DepartureAirportCodes.Add(hotel.AirportCode);
 
             _logger.LogInformation("departure:");
-            _logger.LogInformation(flightsFromRequest.DepartureAirportCodes);
+            _logger.LogInformation(JsonConvert.SerializeObject(flightsFromRequest.DepartureAirportCodes));
 
             if (!cachedFlights.ContainsKey(hotel.AirportCode))
             {
