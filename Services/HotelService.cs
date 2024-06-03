@@ -76,7 +76,7 @@ public class HotelService
         var content = await response.Content.ReadAsStringAsync();
         var hotels = JsonConvert.DeserializeObject<List<Hotel>>(content);
         
-        _logger.LogInformation(JsonConvert.SerializeObject(hotels));
+       // _logger.LogInformation(JsonConvert.SerializeObject(hotels));
         
         return new HotelsResponse { Hotels = hotels };
     }
