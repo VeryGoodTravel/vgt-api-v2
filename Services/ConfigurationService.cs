@@ -11,4 +11,5 @@ public class ConfigurationService
     public string SecretKey => _configuration["Jwt:Key"];
     public string HotelApiUrl => $"http://{Environment.GetEnvironmentVariable("HOTEL_API")}";
     public string FlightApiUrl => $"http://{Environment.GetEnvironmentVariable("FLIGHT_API")}";
+    public string BrokerUrl => $"http://{Environment.GetEnvironmentVariable("RABBIT_HOST")}";
 }

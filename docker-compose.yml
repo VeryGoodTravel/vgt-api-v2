@@ -10,7 +10,7 @@
     environment:
       - HOTEL_API=172.17.0.1:3002
       - FLIGHT_API=172.17.0.1:3001
-      - BROKER=172.17.0.1:5672
+      - RABBIT_HOST=172.17.0.1:5672
     networks:
       - vgt-network
 networks:
