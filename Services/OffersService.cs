@@ -98,14 +98,15 @@ public class OffersService
         _logger.LogInformation(JsonConvert.SerializeObject(hotelsResponse));
         
         var cachedFlights = new Dictionary<string, Tuple<Flight, Flight>?>();
+        _logger.LogInformation($"count {hotelsResponse.Hotels.Count}");
         foreach (var hotel in hotelsResponse.Hotels)
         {
             var hotelAirports = new List<string>() { hotel.AirportCode };
             
             _logger.LogInformation(JsonConvert.SerializeObject(hotelAirports));
             
-            flightsToRequest.ArrivalAirportCodes = hotelAirports;
-            flightsFromRequest.DepartureAirportCodes = hotelAirports;
+            flightsToRequest.ArrivalAirportCodes.Add(hotel.AirportCode);
+            flightsFromRequest.DepartureAirportCodes.Add(hotel.AirportCode);
 
             if (!cachedFlights.ContainsKey(hotel.AirportCode))
             {
