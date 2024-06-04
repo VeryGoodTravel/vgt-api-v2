@@ -83,14 +83,14 @@ public class OffersService
         {
             DepartureDate = filters.Dates.Start,
             ArrivalAirportCodes = new(),
-            DepartureAirportCodes = filters.Origins,
+            DepartureAirportCodes = filters.Origins.FirstOrDefault().Value,
             NumberOfPassengers = numberOfParticipants
         };
         
         var flightsFromRequest = new FlightsRequest()
         {
             DepartureDate = filters.Dates.End,
-            ArrivalAirportCodes = filters.Origins,
+            ArrivalAirportCodes = filters.Origins.FirstOrDefault().Value,
             DepartureAirportCodes = new(),
             NumberOfPassengers = numberOfParticipants
         };
