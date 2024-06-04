@@ -1,6 +1,5 @@
 ﻿services:
   vgt-api:
-    container_name: vgt-api
     image: vgt-api
     build:
       context: .
@@ -8,9 +7,10 @@
     ports:
       - 2138:80
     environment:
-      - HOTEL_API=172.17.0.1:3002
-      - FLIGHT_API=172.17.0.1:3001
-      - RABBIT_HOST=172.17.0.1:5672
+      - HOTEL_API=vgt-saga-hotel:8080
+      - FLIGHT_API=vgt-saga-flight:8080
+      - RABBIT_HOST=vgt-broker
+      - RABBIT_PORT=5672
     networks:
       - vgt-network
 networks:

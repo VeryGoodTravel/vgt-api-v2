@@ -8,22 +8,22 @@ public class Flight
     [JsonProperty("available")]
     public bool Available { get; set; }
     
-    [JsonProperty("flight_id")]
+    [JsonProperty("flightId")]
     public string FlightId { get; set; }
     
-    [JsonProperty("departure_airport_code")]
+    [JsonProperty("departureAirportCode")]
     public string DepartureAirportCode { get; set; }
     
-    [JsonProperty("departure_airport_name")]
+    [JsonProperty("departureAirportName")]
     public string DepartureAirportName { get; set; }
     
-    [JsonProperty("arrival_airport_code")]
+    [JsonProperty("arrivalAirportCode")]
     public string ArrivalAirportCode { get; set; }
     
-    [JsonProperty("arrival_airport_name")]
+    [JsonProperty("arrivalAirportName")]
     public string ArrivalAirportName { get; set; }
     
-    [JsonProperty("departure_date")]
+    [JsonProperty("departureDate")]
     public string DepartureDate { get; set; }
     
     [JsonProperty("price")]

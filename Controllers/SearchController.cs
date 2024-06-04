@@ -27,13 +27,15 @@ namespace vgt_api.Controllers
         {
             try
             {
-                _logger.LogInformation("Search query");
-                _logger.LogInformation(JsonConvert.SerializeObject(request));
                 var results  = 
-                    await _offersService.GetOffers(request.Page*OffersPerPage, OffersPerPage, request);
+                    await _offersService.GetOffers((request.Page-1)*OffersPerPage, OffersPerPage, request);
 
                 var offers = results.Item1;
                 var count = results.Item2;
+                if (count == 0)
+                {
+                    return Envelope<SearchResults>.Error("No offers found");
+                }
                 
                 Pages pages = new Pages
                 {
@@ -41,18 +43,17 @@ namespace vgt_api.Controllers
                     Total = (int)Math.Ceiling((decimal)count / OffersPerPage)
                 };
                 
-                int toSkip = (pages.Page - 1) * OffersPerPage;
                 SearchResults searchResults = new SearchResults
                 {
                     Pages = pages,
-                    Offers = offers.Skip(toSkip).Take(OffersPerPage).ToArray()
+                    Offers = offers.ToArray()
                 };
                 
                 return Envelope<SearchResults>.Ok(searchResults);
             }
             catch (Exception e)
             {
-                _logger.LogInformation(JsonConvert.SerializeObject(request));
+                _logger.LogInformation(JsonConvert.SerializeObject(e.StackTrace));
                 return Envelope<SearchResults>.Error(e.Message);
             }
         }

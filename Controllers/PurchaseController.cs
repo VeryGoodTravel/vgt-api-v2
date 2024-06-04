@@ -45,8 +45,8 @@ namespace vgt_api.Controllers
                 var transaction = new Transaction() {
                     TransactionId = Guid.NewGuid(),
                     OfferId = offerId,
-                    BookFrom = DateTime.Parse(filters.Dates.Start),
-                    BookTo = DateTime.Parse(filters.Dates.End),
+                    BookFrom = DateTime.ParseExact(filters.Dates.Start, "dd-MM-yyyy", null),
+                    BookTo = DateTime.ParseExact(filters.Dates.End, "dd-MM-yyyy", null),
                     TripFrom = filters.City,
                     HotelName = filters.HotelName,
                     RoomType = filters.RoomName,

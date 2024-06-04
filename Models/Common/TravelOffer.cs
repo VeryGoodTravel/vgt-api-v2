@@ -19,15 +19,15 @@ namespace vgt_api.Models.Common
 
         public TravelOffer(bool availability,
             IdFilters filters, Hotel hotel, Room? room, Flight flightTo, Flight flightFrom)
-            : this(availability, filters.ToString(),
+            : this(availability, filters,
                 filters.Dates, hotel, room, flightTo, flightFrom) { }
         
         public TravelOffer(bool availability,
             SearchFilters filters, Hotel hotel, Room? room, Flight flightTo, Flight flightFrom)
-            : this(availability, new IdFilters(filters, hotel, room, flightTo, flightFrom).ToString(),
+            : this(availability, new IdFilters(filters, hotel, room, flightTo, flightFrom),
                 filters.Dates, hotel, room, flightTo, flightFrom) { }
         
-        private TravelOffer(bool availability, string id, TravelDateRange dates, Hotel hotel, Room? room, Flight flightTo, Flight flightFrom)
+        private TravelOffer(bool availability, IdFilters id, TravelDateRange dates, Hotel hotel, Room? room, Flight flightTo, Flight flightFrom)
         {
             Availability = availability;
             Date = dates;
@@ -57,15 +57,20 @@ namespace vgt_api.Models.Common
                     }
                 }
             };
-            Id = id;
+            Id = id.ToString();
             Name = hotel.Name;
-            // this.Maintenance = room.Maintenance;
+            this.Maintenance = "All inclusive";//room.Maintenance;
+            
+            var roomPrice = room?.Price ?? 0;
+            var totalRoomPrice = roomPrice * id.Adults + 2 * roomPrice * id.Children18 + 3 * roomPrice * id.Children10 +
+                             4 * roomPrice * id.Children3; 
+            
             Price = new Price
             {
-                Value = (room?.Price ?? 0) + flightTo.Price + flightFrom.Price,
+                Value = totalRoomPrice + flightTo.Price + flightFrom.Price,
                 Currency = "zł"
             };
-            // this.Rating = room.Rating;
+            this.Rating = 5;//room.Rating;
             Transportation = "Plane";
             Room = room?.Name ?? "Brak informacji";
             Image = _configuration["Offer:Image"];

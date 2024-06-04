@@ -48,10 +48,12 @@ namespace vgt_api.Models.Requests
         
         public HotelsRequest ToHotelsRequest()
         {
+            List<string>? cities = null;
+            Destinations?.TryGetValue("", out cities);
             return new HotelsRequest()
             {
                 Dates = Dates,
-                Cities = Destinations[""],
+                Cities = cities,
                 Participants = Participants
             };
         }

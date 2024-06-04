@@ -35,8 +35,6 @@ public class HotelService
     
     public async Task<HotelsResponse> GetHotels(HotelsRequest request)
     {
-        _logger.LogInformation("Getting hotels");
-
         var participants = request.Participants;
         participants.TryAdd(1, 0);
         participants.TryAdd(2, 0);
@@ -47,8 +45,6 @@ public class HotelService
             start = DateTime.ParseExact(request.Dates.Start, "dd-mm-yyyy", null),
             end = DateTime.ParseExact(request.Dates.End, "dd-mm-yyyy", null)
         };
-
-        _logger.LogInformation(JsonConvert.SerializeObject(request));
         
         var json = new
         {
@@ -68,23 +64,51 @@ public class HotelService
             )
         };
 
-        _logger.LogInformation("Sending request to hotel api");
-        _logger.LogInformation(JsonConvert.SerializeObject(json));
-
         var response = await _httpClient.SendAsync(httpRequest);
         
         var content = await response.Content.ReadAsStringAsync();
         var hotels = JsonConvert.DeserializeObject<List<Hotel>>(content);
         
-       // _logger.LogInformation(JsonConvert.SerializeObject(hotels));
-        
         return new HotelsResponse { Hotels = hotels };
     }
     
     public async Task<HotelResponse> GetHotel(HotelRequest request)
-    {
-        // hotel
-        return new HotelResponse();
+    {        
+        var participants = request.Participants;
+        participants.TryAdd(1, 0); 
+        participants.TryAdd(2, 0);
+        participants.TryAdd(3, 0);
+
+        var dates = new
+        {
+            start = DateTime.ParseExact(request.Dates.Start, "dd-mm-yyyy", null),
+            end = DateTime.ParseExact(request.Dates.End, "dd-mm-yyyy", null)
+        };
+        
+        var json = new
+        {
+            dates,
+            participants,
+            hotelId = request.HotelId,
+            roomId = request.RoomId
+        };
+                
+        var httpRequest = new HttpRequestMessage()
+        {
+            Method = HttpMethod.Post,
+            RequestUri = new Uri(_configurationService.HotelApiUrl + "/hotel"),
+            Content = new StringContent(
+                JsonConvert.SerializeObject(json),
+                Encoding.UTF8,
+                MediaTypeNames.Application.Json
+            )
+        };
+        
+        var response = await _httpClient.SendAsync(httpRequest);
+                
+        var content = await response.Content.ReadAsStringAsync();
+            
+        return JsonConvert.DeserializeObject<HotelResponse>(content);
     }
     
 }
