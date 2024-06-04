@@ -37,7 +37,7 @@ public class Participants
                 },
                 new ParticipantOption
                 {
-                    Id = ((int)ParticipantsEnum.Child18).ToString(),
+                    Id = ((int)ParticipantsEnum.Child10).ToString(),
                     Min = 0,
                     Max = 3,
                     Label = "Dziecko < 10 lat"

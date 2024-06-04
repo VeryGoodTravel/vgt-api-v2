@@ -10,6 +10,6 @@ public class Room
     [JsonProperty("name")]
     public string Name { get; set; }
     
-    [JsonProperty("price_per_person")]
+    [JsonProperty("price")]
     public decimal Price { get; set; }
 }

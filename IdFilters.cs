@@ -53,7 +53,7 @@ public class IdFilters
         Children10 = children10;
         Children3 = children3;
 
-        City = flightTo.ArrivalAirportName;
+        City = flightTo.DepartureAirportName;
         HotelName = hotel.Name;
         RoomName = room.Name;
     }

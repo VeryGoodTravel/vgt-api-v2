@@ -30,7 +30,7 @@ namespace vgt_api.Models.Requests
         /// If none provided, it means 'any'.
         /// </summary>
         [JsonProperty("origins")]
-        public List<string>? Origins { get; set; }
+        public Dictionary<string,List<string>>? Origins { get; set; }
 
         [JsonProperty("page")]
         public int Page { get; set; }
@@ -48,10 +48,12 @@ namespace vgt_api.Models.Requests
         
         public HotelsRequest ToHotelsRequest()
         {
+            List<string>? cities = null;
+            Destinations?.TryGetValue("", out cities);
             return new HotelsRequest()
             {
                 Dates = Dates,
-                Cities = Destinations[""],
+                Cities = cities,
                 Participants = Participants
             };
         }

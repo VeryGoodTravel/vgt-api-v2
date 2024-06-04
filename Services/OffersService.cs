@@ -29,7 +29,7 @@ public class OffersService
             { (int)ParticipantsEnum.Child18, filters.Children18 },
             { (int)ParticipantsEnum.Adult, filters.Adults }
         };
-        
+
         HotelRequest request = new HotelRequest()
         {
             HotelId = filters.HotelId,
@@ -54,9 +54,6 @@ public class OffersService
 
     private async Task<Tuple<Flight, Flight>?> GetHotelPairOfFlights(FlightsRequest flightsToRequest, FlightsRequest flightsFromRequest)
     {
-        //_logger.LogInformation(JsonConvert.SerializeObject(flightsToRequest));
-       // _logger.LogInformation(JsonConvert.SerializeObject(flightsFromRequest));
-        
         var flightsToResponse = await _flightService.GetFlights(flightsToRequest);
         var flightsFromResponse = await _flightService.GetFlights(flightsFromRequest);
         
@@ -79,43 +76,33 @@ public class OffersService
         var hotelsRequest = filters.ToHotelsRequest();
         var numberOfParticipants = filters.Participants.Sum(x => x.Value);
 
+        List<string>? codes = null;
+        filters.Origins?.TryGetValue("", out codes);
+        
         var flightsToRequest = new FlightsRequest()
         {
             DepartureDate = filters.Dates.Start,
             ArrivalAirportCodes = new(),
-            DepartureAirportCodes = filters.Origins,
+            DepartureAirportCodes = codes,
             NumberOfPassengers = numberOfParticipants
         };
         
         var flightsFromRequest = new FlightsRequest()
         {
             DepartureDate = filters.Dates.End,
-            ArrivalAirportCodes = filters.Origins,
+            ArrivalAirportCodes = codes,
             DepartureAirportCodes = new(),
             NumberOfPassengers = numberOfParticipants
         };
         
         var hotelsResponse = await _hotelService.GetHotels(hotelsRequest);
-
-       // _logger.LogInformation(JsonConvert.SerializeObject(hotelsResponse));
-        
         var cachedFlights = new Dictionary<string, Tuple<Flight, Flight>?>();
-        _logger.LogInformation($"count {hotelsResponse.Hotels.Count}");
         foreach (var hotel in hotelsResponse.Hotels.ToList())
         {   
-
             var hotelAirports = new List<string>() { hotel.AirportCode };
-            
-            _logger.LogInformation(JsonConvert.SerializeObject(hotelAirports));
             
             flightsToRequest.ArrivalAirportCodes = hotelAirports;
             flightsFromRequest.DepartureAirportCodes = hotelAirports;
-            
-            //flightsToRequest.ArrivalAirportCodes.Add(hotel.AirportCode);
-            //flightsFromRequest.DepartureAirportCodes.Add(hotel.AirportCode);
-
-            _logger.LogInformation("departure:");
-            _logger.LogInformation(JsonConvert.SerializeObject(flightsFromRequest.DepartureAirportCodes));
 
             if (!cachedFlights.ContainsKey(hotel.AirportCode))
             {
@@ -140,7 +127,7 @@ public class OffersService
                 }
             }
         }
-
+        _logger.LogInformation($"offers count {offers.Count} counter: {counter}");
         return new Tuple<List<TravelOffer>,int>(offers, counter);
     }
     

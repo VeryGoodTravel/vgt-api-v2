@@ -26,7 +26,7 @@ namespace vgt_api.Models.Common
             return new TravelDateRange
             {
                 Start = "01-01-2024",
-                End = "01-01-2025"
+                End = "01-01-2026"
             };
         }
     }

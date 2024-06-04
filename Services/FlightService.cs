@@ -1,9 +1,6 @@
 using System.Net.Mime;
 using System.Text;
-using System.Web;
 using Newtonsoft.Json;
-using vgt_api.Models.Common;
-using vgt_api.Models.Requests;
 using vgt_api.Models.Requests.Flights;
 using vgt_api.Models.Responses.Flights;
 
@@ -33,12 +30,24 @@ public class FlightService
     
     public async Task<FlightResponse> GetFlight(FlightRequest request)
     {
-        var builder = new UriBuilder(_configurationService.FlightApiUrl + "/flight");
-        var query = HttpUtility.ParseQueryString(builder.Query);
-        query["flight_id"] = request.FlightId;
-        query["number_of_passengers"] = request.NumberOfPassengers.ToString();
-        builder.Query = query.ToString();
-        var response = await _httpClient.GetAsync(builder.ToString());
+        var json = new
+        {
+            request.FlightId,
+            request.NumberOfPassengers
+        };
+        
+        var httpRequest = new HttpRequestMessage()
+        { 
+            Method = HttpMethod.Post,
+            RequestUri = new Uri(_configurationService.FlightApiUrl + "/flight"),
+            Content = new StringContent(
+                JsonConvert.SerializeObject(json),
+                Encoding.UTF8, 
+                MediaTypeNames.Application.Json
+            )
+        };
+                
+        var response = await _httpClient.SendAsync(httpRequest); 
         var content = await response.Content.ReadAsStringAsync();
         
         return JsonConvert.DeserializeObject<FlightResponse>(content);
@@ -46,8 +55,7 @@ public class FlightService
     
     public async Task<FlightsResponse> GetFlights(FlightsRequest request)
     {
-        var date = DateTime.ParseExact(request.DepartureDate, "dd-mm-yyyy", null);
-        _logger.LogInformation(JsonConvert.SerializeObject(request)); 
+        var date = DateTime.ParseExact(request.DepartureDate, "dd-MM-yyyy", null);
         var json = new
         {
             request.DepartureAirportCodes,
@@ -67,13 +75,13 @@ public class FlightService
                 )
         };
         
-        _logger.LogInformation(JsonConvert.SerializeObject(httpRequest));
-        
         var response = await _httpClient.SendAsync(httpRequest); 
         var content = await response.Content.ReadAsStringAsync();
-        
-        _logger.LogInformation(JsonConvert.SerializeObject(content));
-        
-        return JsonConvert.DeserializeObject<FlightsResponse>(content);
+
+        var flightsResponse = new FlightsResponse
+        {
+            Flights = JsonConvert.DeserializeObject<List<FlightResponse>>(content) ?? new List<FlightResponse>()
+        };
+        return flightsResponse;
     }
 }
