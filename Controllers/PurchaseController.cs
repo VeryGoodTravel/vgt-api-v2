@@ -1,9 +1,15 @@
+using System.Text;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
+using RabbitMQ.Client;
 using vgt_api.Models.Envelope;
 using vgt_api.Models.Requests;
 using vgt_api.Models.Responses;
 using vgt_api.Models.Rabbit;
 using vgt_api.Services;
+using RabbitMQ.Client;
+using RabbitMQ.Client.Events;
+using RabbitMQ.Client.Exceptions;
 
 namespace vgt_api.Controllers
 {
@@ -13,11 +19,55 @@ namespace vgt_api.Controllers
     {
         private readonly ILogger<PurchaseController> _logger;
         private readonly JwtService _jwtService;
-
+        private readonly ConnectionFactory _factory;
+        private readonly IConnection _connection;
+        private readonly IModel _backendToSaga;
+        private readonly IModel _sagaToBackend;
+        private EventingBasicConsumer? _consumer;
+        
         public PurchaseController(ILogger<PurchaseController> logger, JwtService jwtService)
         {
             _logger = logger;
             _jwtService = jwtService;
+            
+            while (_connection is not { IsOpen: true })
+            {
+            
+                try
+                {
+                    _factory = new ConnectionFactory
+                    {
+                        HostName = "vgt-broker",
+                        Port = 5672,
+                        UserName = "verygoodtravel",
+                        Password = "verygoodtravel",
+                        VirtualHost = "vgt-vhost",
+                        RequestedHeartbeat = TimeSpan.FromSeconds(60),
+                        RequestedConnectionTimeout = TimeSpan.FromSeconds(6000)
+                    };
+                    _connection = _factory.CreateConnection();
+                }
+                catch (BrokerUnreachableException e)
+                {
+                    _logger.LogInformation("Rabbit connection failed");
+                }
+                Task.Delay(100).Wait();
+            }
+            
+            _backendToSaga = _connection.CreateModel();
+            _backendToSaga.QueueDeclare("backend-to-saga-queue",
+                durable: true,
+                exclusive: false,
+                autoDelete: false,
+                arguments: new Dictionary<string, object>());
+            
+            _sagaToBackend = _connection.CreateModel();
+            _sagaToBackend.ExchangeDeclare("saga-to-backends", 
+                ExchangeType.Fanout,
+                durable: true,
+                autoDelete: false,
+                arguments: new Dictionary<string, object>());
+            
         }
 
         [HttpPost]
@@ -57,6 +107,8 @@ namespace vgt_api.Controllers
                 };
                 
                 // TODO: Implement purchase logic
+                var bodyBytes = Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(transaction));
+                _backendToSaga.BasicPublish(string.Empty, "backend-to-saga-queue", null, bodyBytes);
                 // listen for replay with same transactionId
 
                 var sagaResponse = new SagaReply()
