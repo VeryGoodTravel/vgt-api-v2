@@ -54,6 +54,8 @@ namespace vgt_api.Controllers
                 Task.Delay(100).Wait();
             }
             
+            _logger.LogInformation("During RABBITMQ initialization -----------");
+            
             _backendToSaga = _connection.CreateModel();
             _backendToSaga.QueueDeclare("backend-to-saga-queue",
                 durable: true,
@@ -61,12 +63,12 @@ namespace vgt_api.Controllers
                 autoDelete: false,
                 arguments: new Dictionary<string, object>());
             
-            _sagaToBackend = _connection.CreateModel();
-            _sagaToBackend.ExchangeDeclare("saga-to-backends", 
-                ExchangeType.Fanout,
-                durable: true,
-                autoDelete: false,
-                arguments: new Dictionary<string, object>());
+            // _sagaToBackend = _connection.CreateModel();
+            // _sagaToBackend.ExchangeDeclare("saga-to-backends", 
+            //     ExchangeType.Fanout,
+            //     durable: true,
+            //     autoDelete: false,
+            //     arguments: new Dictionary<string, object>());
             
         }
 
@@ -91,7 +93,8 @@ namespace vgt_api.Controllers
             try
             {
                 var filters = IdFilters.FromId(offerId);
-                
+                _logger.LogInformation("filters");
+                _logger.LogInformation(JsonConvert.SerializeObject(filters));
                 var transaction = new Transaction() {
                     TransactionId = Guid.NewGuid(),
                     OfferId = offerId,
@@ -105,6 +108,8 @@ namespace vgt_api.Controllers
                     MidChildren = filters.Children10,
                     LesserChildren = filters.Children3,
                 };
+                _logger.LogInformation("transaction");
+                _logger.LogInformation(JsonConvert.SerializeObject(transaction));
                 
                 // TODO: Implement purchase logic
                 var bodyBytes = Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(transaction));
