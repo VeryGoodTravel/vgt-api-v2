@@ -74,7 +74,7 @@ namespace vgt_api.Controllers
             logger.LogInformation("During RABBITMQ tempqueue -----------");
             var queueName = _sagaToBackend.QueueDeclare().QueueName;
             _sagaToBackend.QueueBind(queue: queueName,
-                exchange: "logs",
+                exchange: "saga-to-backends",
                 routingKey: string.Empty);
             
             logger.LogInformation("During RABBITMQ consumer -----------");
