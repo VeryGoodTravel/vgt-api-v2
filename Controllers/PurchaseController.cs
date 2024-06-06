@@ -136,7 +136,6 @@ namespace vgt_api.Controllers
                 _logger.LogInformation("transaction");
                 _logger.LogInformation(JsonConvert.SerializeObject(transaction));
                 
-                // TODO: Implement purchase logic
                 var bodyBytes = Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(transaction));
                 _backendToSaga.BasicPublish(string.Empty, "backend-to-saga-queue", null, bodyBytes);
                 

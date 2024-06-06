@@ -44,13 +44,11 @@ namespace vgt_api.Controllers
 
         private Participants GetParticipants()
         {
-            // TODO: Implement participants logic
             return Participants.GetExample();
         }
 
         private TravelDateRange GetDates()
         {
-            // TODO: Implement dates logic
             return TravelDateRange.GetExample();
         }
 
