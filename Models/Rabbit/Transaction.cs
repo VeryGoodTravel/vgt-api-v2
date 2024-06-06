@@ -31,6 +31,11 @@ public record struct Transaction()
     public string TripFrom { get; set; }
     
     /// <summary>
+    /// City of the destination the clients are going to fly to
+    /// </summary>
+    public string TripTo { get; set; }
+    
+    /// <summary>
     /// Hotel specified in the offer
     /// </summary>
     public string HotelName { get; set; }
