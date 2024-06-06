@@ -55,7 +55,7 @@ namespace vgt_api.Controllers
             }
             
             _logger.LogInformation("During RABBITMQ initialization -----------");
-            
+            logger.LogInformation("During RABBITMQ backend -----------");
             _backendToSaga = _connection.CreateModel();
             _backendToSaga.QueueDeclare("backend-to-saga-queue",
                 durable: true,
@@ -63,12 +63,33 @@ namespace vgt_api.Controllers
                 autoDelete: false,
                 arguments: new Dictionary<string, object>());
             
-            // _sagaToBackend = _connection.CreateModel();
-            // _sagaToBackend.ExchangeDeclare("saga-to-backends", 
-            //     ExchangeType.Fanout,
-            //     durable: true,
-            //     autoDelete: false,
-            //     arguments: new Dictionary<string, object>());
+            logger.LogInformation("During RABBITMQ exchange -----------");
+            _sagaToBackend = _connection.CreateModel();
+            _sagaToBackend.ExchangeDeclare("saga-to-backends", 
+                ExchangeType.Fanout,
+                durable: true,
+                autoDelete: false,
+                arguments: new Dictionary<string, object>());
+            
+            logger.LogInformation("During RABBITMQ tempqueue -----------");
+            var queueName = _sagaToBackend.QueueDeclare().QueueName;
+            _sagaToBackend.QueueBind(queue: queueName,
+                exchange: "logs",
+                routingKey: string.Empty);
+            
+            logger.LogInformation("During RABBITMQ consumer -----------");
+            var consumer = new EventingBasicConsumer(_sagaToBackend);
+            consumer.Received += (model, ea) =>
+            {
+                byte[] body = ea.Body.ToArray();
+                var message = Encoding.UTF8.GetString(body);
+                logger.LogInformation("--------------------------------------------\nRecieved message\n----------------------");
+                logger.LogInformation(message);
+            };
+            _sagaToBackend.BasicConsume(queue: queueName,
+                autoAck: true,
+                consumer: consumer);
+            
             
         }
 
