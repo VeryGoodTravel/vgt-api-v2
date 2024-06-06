@@ -1,3 +1,4 @@
+using System.Collections.Concurrent;
 using System.Text;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
@@ -24,11 +25,13 @@ namespace vgt_api.Controllers
         private readonly IModel _backendToSaga;
         private readonly IModel _sagaToBackend;
         private EventingBasicConsumer? _consumer;
+        private ConcurrentDictionary<Guid, SagaReply> _sagaResponses;
         
         public PurchaseController(ILogger<PurchaseController> logger, JwtService jwtService)
         {
             _logger = logger;
             _jwtService = jwtService;
+            _sagaResponses = new ConcurrentDictionary<Guid, SagaReply>();
             
             while (_connection is not { IsOpen: true })
             {
@@ -83,14 +86,13 @@ namespace vgt_api.Controllers
             {
                 byte[] body = ea.Body.ToArray();
                 var message = Encoding.UTF8.GetString(body);
-                logger.LogInformation("--------------------------------------------\nRecieved message\n----------------------");
-                logger.LogInformation(message);
+                var reply = JsonConvert.DeserializeObject<SagaReply>(message);
+                if (!_sagaResponses.TryAdd(reply.TransactionId, reply))
+                    logger.LogError("Failed to add saga response to concurrent dictionary");
             };
             _sagaToBackend.BasicConsume(queue: queueName,
                 autoAck: true,
                 consumer: consumer);
-            
-            
         }
 
         [HttpPost]
@@ -116,8 +118,9 @@ namespace vgt_api.Controllers
                 var filters = IdFilters.FromId(offerId);
                 _logger.LogInformation("filters");
                 _logger.LogInformation(JsonConvert.SerializeObject(filters));
+                var transactionId = Guid.NewGuid();
                 var transaction = new Transaction() {
-                    TransactionId = Guid.NewGuid(),
+                    TransactionId = transactionId,
                     OfferId = offerId,
                     BookFrom = DateTime.ParseExact(filters.Dates.Start, "dd-MM-yyyy", null),
                     BookTo = DateTime.ParseExact(filters.Dates.End, "dd-MM-yyyy", null),
@@ -135,28 +138,40 @@ namespace vgt_api.Controllers
                 // TODO: Implement purchase logic
                 var bodyBytes = Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(transaction));
                 _backendToSaga.BasicPublish(string.Empty, "backend-to-saga-queue", null, bodyBytes);
-                // listen for replay with same transactionId
-
-                var sagaResponse = new SagaReply()
+                
+                // listen for reply with same transactionId
+                var timeout = 70;
+                SagaReply sagaResponse;
+                while (timeout > 0)
                 {
-                    Answer = SagaAnswer.Success
-                };
-                if (sagaResponse.Answer == SagaAnswer.Success)
-                {
-                    return new PurchaseResponse
+                    if (_sagaResponses.TryRemove(transactionId, out sagaResponse))
                     {
-                        Success = true,
-                        Message = "Offer purchased successfully"
-                    };
+                        if (sagaResponse.Answer == SagaAnswer.Success)
+                        {
+                            return new PurchaseResponse
+                            {
+                                Success = true,
+                                Message = "Offer purchased successfully"
+                            };
+                        }
+                        
+                        {
+                            return new PurchaseResponse
+                            {
+                                Success = false,
+                                Message = "Offer purchase failed"
+                            };
+                        }
+                    }
+                    await Task.Delay(1000);
+                    timeout--;
                 }
                 
+                return new PurchaseResponse
                 {
-                    return new PurchaseResponse
-                    {
-                        Success = false,
-                        Message = "Offer purchase failed"
-                    };
-                }
+                    Success = false,
+                    Message = "Offer purchase failed"
+                };
             } catch (Exception e)
             {
                 return new PurchaseResponse
