@@ -25,15 +25,20 @@ namespace vgt_api.Controllers
         [HttpGet]
         public async Task<Envelope<SearchResults>> Search([FromQuery] SearchFilters request)
         {
+            _logger.LogInformation("Received GetOfferPage request: {request}",
+                JsonConvert.SerializeObject(request));
             try
             {
                 var results  = 
                     await _offersService.GetOffers((request.Page-1)*OffersPerPage, OffersPerPage, request);
+                _logger.LogInformation("Received offers from hotel and flight services: {results}",
+                    JsonConvert.SerializeObject(results));
 
                 var offers = results.Item1;
                 var count = results.Item2;
                 if (count == 0)
                 {
+                    _logger.LogInformation("Returning no offers, because there were none");
                     return Envelope<SearchResults>.Error("No offers found");
                 }
                 
@@ -49,54 +54,16 @@ namespace vgt_api.Controllers
                     Offers = offers.ToArray()
                 };
                 
+                _logger.LogInformation("Returning GetOfferPage response: {response}",
+                    JsonConvert.SerializeObject(searchResults));
                 return Envelope<SearchResults>.Ok(searchResults);
             }
             catch (Exception e)
             {
-                _logger.LogInformation(JsonConvert.SerializeObject(e.StackTrace));
+                _logger.LogError("Thrown error in GetOfferPage request handling: {error}", e.Message);
+                _logger.LogError("Stacktrace: {error}", e.StackTrace);
                 return Envelope<SearchResults>.Error(e.Message);
             }
-        }
-
-        private TravelOffer[] GetOffers(SearchFilters filters)
-        {
-            // TODO: Implement search logic
-            
-            int children18;
-            int children10;
-            int children3;
-            filters.Participants.TryGetValue(3, out children18);
-            filters.Participants.TryGetValue(2, out children10);
-            filters.Participants.TryGetValue(1, out children3);
-            
-            List<TravelOffer> offers = new List<TravelOffer>();
-            
-            for (int i = 0; i < 11; i++)
-            {
-                IdFilters idFilters = new IdFilters
-                {
-                    HotelId = $"hotel_{i}",
-                    HotelName = $"hotel name {i}",
-                    RoomId = $"room_{i}",
-                    RoomName = $"room name {i}",
-                    DepartureCity = $"departure location {i}",
-                    ArrivalCity = $"arrival location {i}",
-                    FlightToId = $"flight_to_{i}",
-                    FlightFromId = $"flight_from_{i}",
-                    Adults = filters.Participants[4],
-                    Children18 = children18,    
-                    Children10 = children10,
-                    Children3 = children3,
-                    Dates = filters.Dates
-                };
-
-                var exampleOffer = TravelOffer.GetExample();
-                exampleOffer.Id = idFilters.ToString();
-                
-                offers.Add(exampleOffer);
-            }
-
-            return offers.ToArray();
         }
     }
 }

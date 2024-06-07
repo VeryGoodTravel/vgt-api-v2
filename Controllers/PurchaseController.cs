@@ -58,7 +58,7 @@ namespace vgt_api.Controllers
             }
             
             _logger.LogInformation("During RABBITMQ initialization -----------");
-            logger.LogInformation("During RABBITMQ backend -----------");
+            _logger.LogInformation("During RABBITMQ backend -----------");
             _backendToSaga = _connection.CreateModel();
             _backendToSaga.QueueDeclare("backend-to-saga-queue",
                 durable: true,
@@ -66,7 +66,7 @@ namespace vgt_api.Controllers
                 autoDelete: false,
                 arguments: new Dictionary<string, object>());
             
-            logger.LogInformation("During RABBITMQ exchange -----------");
+            _logger.LogInformation("During RABBITMQ exchange -----------");
             _sagaToBackend = _connection.CreateModel();
             _sagaToBackend.ExchangeDeclare("saga-to-backends", 
                 ExchangeType.Fanout,
@@ -74,13 +74,13 @@ namespace vgt_api.Controllers
                 autoDelete: false,
                 arguments: new Dictionary<string, object>());
             
-            logger.LogInformation("During RABBITMQ tempqueue -----------");
+            _logger.LogInformation("During RABBITMQ tempqueue -----------");
             var queueName = _sagaToBackend.QueueDeclare().QueueName;
             _sagaToBackend.QueueBind(queue: queueName,
                 exchange: "saga-to-backends",
                 routingKey: string.Empty);
             
-            logger.LogInformation("During RABBITMQ consumer -----------");
+            _logger.LogInformation("During RABBITMQ consumer -----------");
             var consumer = new EventingBasicConsumer(_sagaToBackend);
             consumer.Received += (model, ea) =>
             {
@@ -88,7 +88,7 @@ namespace vgt_api.Controllers
                 var message = Encoding.UTF8.GetString(body);
                 var reply = JsonConvert.DeserializeObject<SagaReply>(message);
                 if (!_sagaResponses.TryAdd(reply.TransactionId, reply))
-                    logger.LogError("Failed to add saga response to concurrent dictionary");
+                    _logger.LogError("Failed to add saga response to concurrent dictionary");
             };
             _sagaToBackend.BasicConsume(queue: queueName,
                 autoAck: true,
@@ -115,9 +115,11 @@ namespace vgt_api.Controllers
         {
             try
             {
+                _logger.LogInformation("Received PurchaseOffer request {offerId}", offerId);
+                
                 var filters = IdFilters.FromId(offerId);
-                _logger.LogInformation("filters");
-                _logger.LogInformation(JsonConvert.SerializeObject(filters));
+                _logger.LogInformation("PurchaseOffer filters: {filters}", JsonConvert.SerializeObject(filters));
+                
                 var transactionId = Guid.NewGuid();
                 var transaction = new Transaction() {
                     TransactionId = transactionId,
@@ -133,14 +135,14 @@ namespace vgt_api.Controllers
                     MidChildren = filters.Children10,
                     LesserChildren = filters.Children3,
                 };
-                _logger.LogInformation("transaction");
-                _logger.LogInformation(JsonConvert.SerializeObject(transaction));
+                _logger.LogInformation("PurchaseOffer transaction: {transaction}",
+                    JsonConvert.SerializeObject(transaction));
                 
                 var bodyBytes = Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(transaction));
                 _backendToSaga.BasicPublish(string.Empty, "backend-to-saga-queue", null, bodyBytes);
                 
                 // listen for reply with same transactionId
-                var timeout = 70;
+                var timeout = 60;
                 SagaReply sagaResponse;
                 while (timeout > 0)
                 {
@@ -148,6 +150,7 @@ namespace vgt_api.Controllers
                     {
                         if (sagaResponse.Answer == SagaAnswer.Success)
                         {
+                            _logger.LogInformation("PurchaseOffer saga returned and succeeded");
                             return new PurchaseResponse
                             {
                                 Success = true,
@@ -156,6 +159,7 @@ namespace vgt_api.Controllers
                         }
                         
                         {
+                            _logger.LogInformation("PurchaseOffer saga returned but purchase failed");
                             return new PurchaseResponse
                             {
                                 Success = false,
@@ -167,13 +171,17 @@ namespace vgt_api.Controllers
                     timeout--;
                 }
                 
+                _logger.LogInformation("PurchaseOffer timeouted");
                 return new PurchaseResponse
                 {
                     Success = false,
                     Message = "Offer purchase failed"
                 };
-            } catch (Exception e)
+            }
+            catch (Exception e)
             {
+                _logger.LogError("Thrown error in PurchaseOffer request handling: {error}", e.Message);
+                _logger.LogError("Stacktrace: {error}", e.StackTrace);
                 return new PurchaseResponse
                 {
                     Success = false,
