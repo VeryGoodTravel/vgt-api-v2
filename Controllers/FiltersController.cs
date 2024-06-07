@@ -37,8 +37,7 @@ namespace vgt_api.Controllers
                     Dates = GetDates(),
                     Participants = GetParticipants()
                 };
-                _logger.LogInformation("Returning GetFilters: {filters}",
-                    JsonConvert.SerializeObject(filters));
+                _logger.LogInformation("Returning GetFilters successfully");
                 return Envelope<Filters>.Ok(filters);
             } catch (Exception e)
             {

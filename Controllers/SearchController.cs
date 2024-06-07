@@ -31,11 +31,10 @@ namespace vgt_api.Controllers
             {
                 var results  = 
                     await _offersService.GetOffers((request.Page-1)*OffersPerPage, OffersPerPage, request);
-                _logger.LogInformation("Received offers from hotel and flight services: {results}",
-                    JsonConvert.SerializeObject(results));
 
                 var offers = results.Item1;
                 var count = results.Item2;
+                _logger.LogInformation("Received offers from hotel and flight services - {count} offers", count);
                 if (count == 0)
                 {
                     _logger.LogInformation("Returning no offers, because there were none");
@@ -54,8 +53,7 @@ namespace vgt_api.Controllers
                     Offers = offers.ToArray()
                 };
                 
-                _logger.LogInformation("Returning GetOfferPage response: {response}",
-                    JsonConvert.SerializeObject(searchResults));
+                _logger.LogInformation("Returning GetOfferPage successfully");
                 return Envelope<SearchResults>.Ok(searchResults);
             }
             catch (Exception e)

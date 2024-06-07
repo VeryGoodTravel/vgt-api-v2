@@ -28,8 +28,7 @@ namespace vgt_api.Controllers
             try
             {
                 var travelOffer = await _offersService.GetOffer(offerRequest.OfferId);
-                _logger.LogInformation("Returning GetOfferDetails response: {response}",
-                    JsonConvert.SerializeObject(travelOffer));
+                _logger.LogInformation("Returning GetOfferDetails successfully");
                 return Envelope<TravelOffer>.Ok(travelOffer);
             }
             catch (Exception e)
