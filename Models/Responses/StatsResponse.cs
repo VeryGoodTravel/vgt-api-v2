@@ -5,9 +5,9 @@ namespace vgt_api.Models.Responses;
 
 public class StatsResponse
 {
-    [JsonProperty("popular_directions")]
-    public PopularDirection[] PopularDirections { get; set; }
+    [JsonProperty("directions")]
+    public Direction[] Directions { get; set; }
     
-    [JsonProperty("popular_accommodations")]
-    public PopularAccommodation[] PopularAccommodations { get; set; }
+    [JsonProperty("accommodations")]
+    public Accommodation[] Accommodations { get; set; }
 }

@@ -2,7 +2,7 @@ using Newtonsoft.Json;
 
 namespace vgt_api.Models.Common;
 
-public class PopularDirection
+public class Direction
 {
     [JsonProperty("origin")]
     public TravelLocation Origin { get; set; }
@@ -10,9 +10,9 @@ public class PopularDirection
     [JsonProperty("destination")]
     public TravelLocation Destination { get; set; }
 
-    public static PopularDirection GetExample()
+    public static Direction GetExample()
     {
-        return new PopularDirection
+        return new Direction
         {
             Origin = new TravelLocation
             {

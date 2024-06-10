@@ -22,8 +22,8 @@ public class StatsService
     {
         return new StatsResponse
         {
-            PopularDirections = new[] { PopularDirection.GetExample() },
-            PopularAccommodations = new[] { PopularAccommodation.GetExample() }
+            Directions = new[] { Direction.GetExample() },
+            Accommodations = new[] { Accommodation.GetExample() }
         };
         
         var response = await _httpClient.GetAsync(_configurationService.StatsApiUrl + "/stats");

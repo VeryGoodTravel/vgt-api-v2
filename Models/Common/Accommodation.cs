@@ -2,7 +2,7 @@ using Newtonsoft.Json;
 
 namespace vgt_api.Models.Common;
 
-public class PopularAccommodation
+public class Accommodation
 {
     [JsonProperty("destination")]
     public TravelLocation Destination { get; set; }
@@ -22,9 +22,9 @@ public class PopularAccommodation
     [JsonProperty("rating")]
     public double Rating { get; set; }
 
-    public static PopularAccommodation GetExample()
+    public static Accommodation GetExample()
     {
-        return new PopularAccommodation
+        return new Accommodation
         {
             Destination = new TravelLocation
             {
