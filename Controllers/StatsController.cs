@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using vgt_api.Models.Common;
 using vgt_api.Models.Envelope;
 using vgt_api.Models.Responses;
 using vgt_api.Services;
@@ -25,8 +26,43 @@ namespace vgt_api.Controllers
             try
             {
                 var stats = await _statsService.GetStats();
+
+                var directions = stats.Directions.Select(d => new Direction
+                {
+                    Origin = new TravelLocation
+                    {
+                        Id = "0", // uzupelnic id z getfilters
+                        Label = d.Origin
+                    },
+                    Destination = new TravelLocation
+                    {
+                        Id = "0", // uzupelnic id z getfilters
+                        Label = d.Destination
+                    }
+                }).ToArray();
+
+                var accommodations = stats.Accommodations.Select(a => new Accommodation
+                {
+                    Destination = new TravelLocation
+                    {
+                        Id = "0", // uzupelnic id z getfilters
+                        Label = a.Destination
+                    },
+                    Maintenance = a.Maintenance,
+                    Name = a.Name,
+                    Rating = 5.0, // ogarnac ten rating z hotelservice
+                    Room = a.Room,
+                    Transportation = a.Transportation
+                }).ToArray();
+
+                var response = new StatsResponse
+                {
+                    Directions = directions,
+                    Accommodations = accommodations
+                };
+                
                 _logger.LogInformation("Returning GetPopularOffers successfully");
-                return Envelope<StatsResponse>.Ok(stats);
+                return Envelope<StatsResponse>.Ok(response);
             }
             catch (Exception e)
             {

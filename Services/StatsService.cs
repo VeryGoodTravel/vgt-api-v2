@@ -17,12 +17,12 @@ public class StatsService
         _logger = logger;
     }
 
-    public async Task<StatsResponse> GetStats()
+    public async Task<StatsResults> GetStats()
     {
         var response = await _httpClient.GetAsync(_configurationService.StatsApiUrl + "/PopularOffers");
         var content = await response.Content.ReadAsStringAsync();
         
-        return JsonConvert.DeserializeObject<StatsResponse>(content);
+        return JsonConvert.DeserializeObject<StatsResults>(content);
     }
 
     public async Task<int> CheckOfferPopularity(string id)
