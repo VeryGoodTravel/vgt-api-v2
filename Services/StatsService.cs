@@ -27,9 +27,9 @@ public class StatsService
 
     public async Task<int> CheckOfferPopularity(string id)
     {
-        // var response = await _httpClient.GetAsync(_configurationService.StatsApiUrl + "/OfferPopularity");
-        // var content = await response.Content.ReadAsStringAsync();
+        var response = await _httpClient.GetAsync(_configurationService.StatsApiUrl + "/OfferPopularity");
+        var content = await response.Content.ReadAsStringAsync();
 
-        return 1;
+        return int.Parse(content);
     }
 }
