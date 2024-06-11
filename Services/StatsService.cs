@@ -20,12 +20,6 @@ public class StatsService
 
     public async Task<StatsResponse> GetStats()
     {
-        return new StatsResponse
-        {
-            Directions = new[] { Direction.GetExample() },
-            Accommodations = new[] { Accommodation.GetExample() }
-        };
-        
         var response = await _httpClient.GetAsync(_configurationService.StatsApiUrl + "/stats");
         var content = await response.Content.ReadAsStringAsync();
         
