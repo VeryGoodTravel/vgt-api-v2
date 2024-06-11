@@ -31,6 +31,7 @@ namespace vgt_api.Controllers
             {
                 var travelOffer = await _offersService.GetOffer(offerRequest.OfferId);
                 var popularity = await _statsService.CheckOfferPopularity(offerRequest.OfferId);
+                _logger.LogInformation("Received offer popularity: {p}", popularity);
                 travelOffer.RecentlyPurchased = popularity;
                 
                 _logger.LogInformation("Returning GetOfferDetails successfully");

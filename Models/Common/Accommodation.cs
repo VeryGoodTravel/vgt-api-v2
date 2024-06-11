@@ -5,7 +5,7 @@ namespace vgt_api.Models.Common;
 public class Accommodation
 {
     [JsonProperty("destination")]
-    public TravelLocation Destination { get; set; }
+    public string Destination { get; set; }
     
     [JsonProperty("name")]
     public string Name { get; set; }
@@ -18,24 +18,16 @@ public class Accommodation
     
     [JsonProperty("maintenance")]
     public string Maintenance { get; set; }
-    
-    [JsonProperty("rating")]
-    public double Rating { get; set; }
 
     public static Accommodation GetExample()
     {
         return new Accommodation
         {
-            Destination = new TravelLocation
-            {
-                Id = "20",
-                Label = "New York",
-            },
+            Destination = "New York",
             Name = "Warwick New York",
             Room = "Double",
             Transportation = "Plane",
-            Maintenance = "All inclusive",
-            Rating = 4.5
+            Maintenance = "All inclusive"
         };
     }
 }
