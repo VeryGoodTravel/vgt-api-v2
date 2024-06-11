@@ -17,6 +17,7 @@ builder.Services.AddSingleton<JwtService>();
 builder.Services.AddSingleton<HotelService>();
 builder.Services.AddSingleton<FlightService>();
 builder.Services.AddSingleton<OffersService>();
+builder.Services.AddSingleton<StatsService>();
 
 var app = builder.Build();
 

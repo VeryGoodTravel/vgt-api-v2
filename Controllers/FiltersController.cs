@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 using vgt_api.Models.Common;
 using vgt_api.Models.Envelope;
 using vgt_api.Models.Responses;
@@ -26,6 +27,7 @@ namespace vgt_api.Controllers
         [HttpGet]
         public async Task<Envelope<Filters>> GetFilters()
         {
+            _logger.LogInformation("Received GetFilters request");
             try
             {
                 Filters filters = new Filters
@@ -35,22 +37,23 @@ namespace vgt_api.Controllers
                     Dates = GetDates(),
                     Participants = GetParticipants()
                 };
+                _logger.LogInformation("Returning GetFilters successfully");
                 return Envelope<Filters>.Ok(filters);
             } catch (Exception e)
             {
+                _logger.LogError("Thrown error in GetFilters request handling: {error}", e.Message);
+                _logger.LogError("Stacktrace: {error}", e.StackTrace);
                 return Envelope<Filters>.Error(e.Message);
             }
         }
 
         private Participants GetParticipants()
         {
-            // TODO: Implement participants logic
             return Participants.GetExample();
         }
 
         private TravelDateRange GetDates()
         {
-            // TODO: Implement dates logic
             return TravelDateRange.GetExample();
         }
 

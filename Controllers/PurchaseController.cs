@@ -90,7 +90,7 @@ namespace vgt_api.Controllers
                 _logger.LogInformation(message);
                 var reply = JsonConvert.DeserializeObject<SagaReply>(message);
                 if (!_sagaResponses.TryAdd(reply.TransactionId, reply))
-                    logger.LogError("Failed to add saga response to concurrent dictionary");
+                    _logger.LogError("Failed to add saga response to concurrent dictionary");
                 _logger.LogInformation("Added saga respone to SagaResponses");
             };
             _sagaToBackend.BasicConsume(queue: queueName,
@@ -118,9 +118,11 @@ namespace vgt_api.Controllers
         {
             try
             {
+                _logger.LogInformation("Received PurchaseOffer request {offerId}", offerId);
+                
                 var filters = IdFilters.FromId(offerId);
-                _logger.LogInformation("filters");
-                _logger.LogInformation(JsonConvert.SerializeObject(filters));
+                _logger.LogInformation("PurchaseOffer filters: {filters}", JsonConvert.SerializeObject(filters));
+                
                 var transactionId = Guid.NewGuid();
                 var transaction = new Transaction() {
                     TransactionId = transactionId,
@@ -136,15 +138,15 @@ namespace vgt_api.Controllers
                     MidChildren = filters.Children10,
                     LesserChildren = filters.Children3,
                 };
-                _logger.LogInformation("transaction");
-                _logger.LogInformation(JsonConvert.SerializeObject(transaction));
+                _logger.LogInformation("PurchaseOffer transaction: {transaction}",
+                    JsonConvert.SerializeObject(transaction));
                 
                 // TODO: Implement purchase logic
                 var bodyBytes = Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(transaction));
                 _backendToSaga.BasicPublish(string.Empty, "backend-to-saga-queue", null, bodyBytes);
                 
                 // listen for reply with same transactionId
-                var timeout = 70;
+                var timeout = 60;
                 SagaReply sagaResponse;
                 while (timeout > 0)
                 {
@@ -152,6 +154,7 @@ namespace vgt_api.Controllers
                     {
                         if (sagaResponse.Answer == SagaAnswer.Success)
                         {
+                            _logger.LogInformation("PurchaseOffer saga returned and succeeded");
                             return new PurchaseResponse
                             {
                                 Success = true,
@@ -160,6 +163,7 @@ namespace vgt_api.Controllers
                         }
                         
                         {
+                            _logger.LogInformation("PurchaseOffer saga returned but purchase failed");
                             return new PurchaseResponse
                             {
                                 Success = false,
@@ -171,13 +175,17 @@ namespace vgt_api.Controllers
                     timeout--;
                 }
                 
+                _logger.LogInformation("PurchaseOffer timeouted");
                 return new PurchaseResponse
                 {
                     Success = false,
                     Message = "Offer purchase failed"
                 };
-            } catch (Exception e)
+            }
+            catch (Exception e)
             {
+                _logger.LogError("Thrown error in PurchaseOffer request handling: {error}", e.Message);
+                _logger.LogError("Stacktrace: {error}", e.StackTrace);
                 return new PurchaseResponse
                 {
                     Success = false,

@@ -1,3 +1,6 @@
+using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
+
 namespace vgt_api.Models.Rabbit;
 
 public enum SagaAnswer
@@ -26,6 +29,7 @@ public record struct SagaReply()
     /// </summary>
     public int OfferId { get; set; }
     
+    [JsonConverter(typeof(StringEnumConverter))]
     public SagaAnswer Answer { get; set; }
     
 }

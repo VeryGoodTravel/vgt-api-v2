@@ -1,10 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.IdentityModel.Tokens;
-using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
-using System.Text;
 using System.Text.RegularExpressions;
-using vgt_api.Models.Common;
 using vgt_api.Models.Envelope;
 using vgt_api.Models.Requests;
 using vgt_api.Models.Responses;

@@ -8,7 +8,6 @@ namespace vgt_api.Models.Requests
     /// </summary>
     public class OfferRequest
     {
-        // TODO: Is this class necessary?
         [JsonProperty("offer_id")]
         [FromQuery(Name = "offer_id")]
         public string OfferId { get; set; }
