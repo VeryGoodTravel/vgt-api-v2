@@ -21,16 +21,20 @@ public class IdFilters
     public int Children18 { get; set; }
     public int Children10 { get; set; }
     public int Children3 { get; set; }
-        
+    public string DestinationCity { get; set; }
+    public string Maintenance { get; set; }
+    public string Transportation { get; set; }
     public override string ToString()
     {
         var hotelName = HotelName.Replace(" ", "_");
         var roomName = RoomName.Replace(" ", "_");
         var departureCity = DepartureCity.Replace(" ", "_");
         var arrivalCity = ArrivalCity.Replace(" ", "_");
+        var maintenance = Maintenance.Replace(" ", "_");
+        var transportation = Transportation.Replace(" ", "_");
         
         return
-            $"{HotelId}${hotelName}${RoomId}${roomName}${departureCity}${arrivalCity}${FlightToId}${FlightFromId}${Dates.Start}${Dates.End}${Adults}${Children18}${Children10}${Children3}";
+            $"{HotelId}${hotelName}${RoomId}${roomName}${departureCity}${arrivalCity}${FlightToId}${FlightFromId}${Dates.Start}${Dates.End}${Adults}${Children18}${Children10}${Children3}${DestinationCity}${maintenance}${transportation}";
     }
     
     public IdFilters() {}
@@ -40,7 +44,7 @@ public class IdFilters
         return participants.ContainsKey((int)age) ? participants[(int)age] : 0;
     }
     
-    public IdFilters(SearchFilters filters, Hotel hotel, Room room, Flight flightTo, Flight flightFrom)
+    public IdFilters(SearchFilters filters, Hotel hotel, Room room, Flight flightTo, Flight flightFrom, string maintenance, string transportation)
     {
         int children18 = GetChildrenCount(filters.Participants, ParticipantsEnum.Child18);
         int children10 = GetChildrenCount(filters.Participants, ParticipantsEnum.Child10);
@@ -60,6 +64,9 @@ public class IdFilters
         ArrivalCity = flightTo.ArrivalAirportName;
         HotelName = hotel.Name;
         RoomName = room.Name;
+        DestinationCity = hotel.City;
+        Maintenance = maintenance;
+        Transportation = transportation;
     }
         
     public static IdFilters FromId(string id)
@@ -79,7 +86,10 @@ public class IdFilters
             Adults = int.Parse(parts[10]),
             Children18 = int.Parse(parts[11]),
             Children10 = int.Parse(parts[12]),
-            Children3 = int.Parse(parts[13])
+            Children3 = int.Parse(parts[13]),
+            DestinationCity = parts[14],
+            Maintenance = parts[15],
+            Transportation = parts[16]
         };
     }
 }

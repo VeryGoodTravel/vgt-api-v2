@@ -17,15 +17,11 @@ namespace vgt_api.Models.Common
             Image = _configuration["Offer:Image"];
         }
 
-        public TravelOffer(bool availability,
-            IdFilters filters, Hotel hotel, Room? room, Flight flightTo, Flight flightFrom)
-            : this(availability, filters,
-                filters.Dates, hotel, room, flightTo, flightFrom) { }
+        public TravelOffer(bool availability, IdFilters filters, Hotel hotel, Room? room, Flight flightTo, Flight flightFrom)
+            : this(availability, filters, filters.Dates, hotel, room, flightTo, flightFrom) { }
         
-        public TravelOffer(bool availability,
-            SearchFilters filters, Hotel hotel, Room? room, Flight flightTo, Flight flightFrom)
-            : this(availability, new IdFilters(filters, hotel, room, flightTo, flightFrom),
-                filters.Dates, hotel, room, flightTo, flightFrom) { }
+        public TravelOffer(bool availability, SearchFilters filters, Hotel hotel, Room? room, Flight flightTo, Flight flightFrom)
+            : this(availability, new IdFilters(filters, hotel, room, flightTo, flightFrom, "All Inclusive", "Plane"), filters.Dates, hotel, room, flightTo, flightFrom) { }
         
         private TravelOffer(bool availability, IdFilters id, TravelDateRange dates, Hotel hotel, Room? room, Flight flightTo, Flight flightFrom)
         {
