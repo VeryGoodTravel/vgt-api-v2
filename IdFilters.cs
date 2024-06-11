@@ -30,11 +30,12 @@ public class IdFilters
         var roomName = RoomName.Replace(" ", "_");
         var departureCity = DepartureCity.Replace(" ", "_");
         var arrivalCity = ArrivalCity.Replace(" ", "_");
+        var destinationCity = DestinationCity.Replace(" ", "_");
         var maintenance = Maintenance.Replace(" ", "_");
         var transportation = Transportation.Replace(" ", "_");
         
         return
-            $"{HotelId}${hotelName}${RoomId}${roomName}${departureCity}${arrivalCity}${FlightToId}${FlightFromId}${Dates.Start}${Dates.End}${Adults}${Children18}${Children10}${Children3}${DestinationCity}${maintenance}${transportation}";
+            $"{HotelId}${hotelName}${RoomId}${roomName}${departureCity}${arrivalCity}${FlightToId}${FlightFromId}${Dates.Start}${Dates.End}${Adults}${Children18}${Children10}${Children3}${destinationCity}${maintenance}${transportation}";
     }
     
     public IdFilters() {}
