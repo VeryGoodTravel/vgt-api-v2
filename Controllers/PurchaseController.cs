@@ -89,6 +89,8 @@ namespace vgt_api.Controllers
                 var message = Encoding.UTF8.GetString(body);
                 _logger.LogInformation(message);
                 var reply = JsonConvert.DeserializeObject<SagaReply>(message);
+                _logger.LogInformation("Deserialised: {filters} | {t} | {c}", reply.TransactionId, 
+                    reply.Answer.ToString(), reply.OfferId);
                 if (!_sagaResponses.TryAdd(reply.TransactionId, reply))
                     _logger.LogError("Failed to add saga response to concurrent dictionary");
                 _logger.LogInformation("Added saga respone to SagaResponses");
