@@ -1,5 +1,4 @@
 using Newtonsoft.Json;
-using vgt_api.Models.Common;
 using vgt_api.Models.Responses;
 
 namespace vgt_api.Services;
@@ -20,9 +19,17 @@ public class StatsService
 
     public async Task<StatsResponse> GetStats()
     {
-        var response = await _httpClient.GetAsync(_configurationService.StatsApiUrl + "/stats");
+        var response = await _httpClient.GetAsync(_configurationService.StatsApiUrl + "/PopularOffers");
         var content = await response.Content.ReadAsStringAsync();
         
         return JsonConvert.DeserializeObject<StatsResponse>(content);
+    }
+
+    public async Task<int> CheckOfferPopularity(string id)
+    {
+        // var response = await _httpClient.GetAsync(_configurationService.StatsApiUrl + "/OfferPopularity");
+        // var content = await response.Content.ReadAsStringAsync();
+
+        return 1;
     }
 }

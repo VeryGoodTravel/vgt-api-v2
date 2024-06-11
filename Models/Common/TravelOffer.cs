@@ -70,6 +70,7 @@ namespace vgt_api.Models.Common
             Transportation = "Plane";
             Room = room?.Name ?? "Brak informacji";
             Image = _configuration["Offer:Image"];
+            RecentlyPurchased = 0;
         }
         
         [JsonProperty("availability", NullValueHandling = NullValueHandling.Ignore)]
@@ -107,6 +108,9 @@ namespace vgt_api.Models.Common
 
         [JsonProperty("transportation", NullValueHandling = NullValueHandling.Ignore)]
         public string Transportation { get; set; }
+        
+        [JsonProperty("recentlyPurchased", NullValueHandling = NullValueHandling.Ignore)]
+        public int RecentlyPurchased { get; set; }
 
         public static TravelOffer GetExample()
         {
@@ -155,7 +159,8 @@ namespace vgt_api.Models.Common
                 },
                 Rating = 4.5,
                 Transportation = "Plane",
-                Room = "Double"
+                Room = "Double",
+                RecentlyPurchased = 1
             };
         }
     }

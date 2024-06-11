@@ -13,11 +13,13 @@ namespace vgt_api.Controllers
     {
         private readonly ILogger<OfferController> _logger;
         private readonly OffersService _offersService;
+        private readonly StatsService _statsService;
 
-        public OfferController(ILogger<OfferController> logger, OffersService offersService)
+        public OfferController(ILogger<OfferController> logger, OffersService offersService, StatsService statsService)
         {
             _logger = logger;
             _offersService = offersService;
+            _statsService = statsService;
         }
 
         [HttpGet]
@@ -28,6 +30,9 @@ namespace vgt_api.Controllers
             try
             {
                 var travelOffer = await _offersService.GetOffer(offerRequest.OfferId);
+                var popularity = await _statsService.CheckOfferPopularity(offerRequest.OfferId);
+                travelOffer.RecentlyPurchased = popularity;
+                
                 _logger.LogInformation("Returning GetOfferDetails successfully");
                 return Envelope<TravelOffer>.Ok(travelOffer);
             }
