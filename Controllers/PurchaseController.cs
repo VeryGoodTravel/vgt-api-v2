@@ -84,11 +84,14 @@ namespace vgt_api.Controllers
             var consumer = new EventingBasicConsumer(_sagaToBackend);
             consumer.Received += (model, ea) =>
             {
+                _logger.LogInformation("Received response from the queue");
                 byte[] body = ea.Body.ToArray();
                 var message = Encoding.UTF8.GetString(body);
+                _logger.LogInformation(message);
                 var reply = JsonConvert.DeserializeObject<SagaReply>(message);
                 if (!_sagaResponses.TryAdd(reply.TransactionId, reply))
                     logger.LogError("Failed to add saga response to concurrent dictionary");
+                _logger.LogInformation("Added saga respone to SagaResponses");
             };
             _sagaToBackend.BasicConsume(queue: queueName,
                 autoAck: true,
