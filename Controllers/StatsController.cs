@@ -59,7 +59,7 @@ namespace vgt_api.Controllers
                     },
                     Maintenance = a.Maintenance.Replace("_", " "),
                     Name = a.Name.Replace("_", " "),
-                    Rating = 0.0,
+                    Rating = Rating.CombineRandomizeRating(new[] {a.Name.Replace("_", " "), a.Room.Replace("_", " ")}),
                     Room = a.Room.Replace("_", " "),
                     Transportation = a.Transportation.Replace("_", " ")
                 }).ToArray();
