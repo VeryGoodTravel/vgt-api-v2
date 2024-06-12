@@ -32,7 +32,11 @@ public class StatsService
 
     public async Task<int> CheckOfferPopularity(string id)
     {
-        var requestBody = new StatsRequest(id);
+        var requestBody = new StatsRequest
+        {
+            OfferId = id
+        };
+        _logger.LogInformation("Sending /OfferPopularity with body: {body}", requestBody.OfferId);
         var httpRequest = new HttpRequestMessage
         {
             Method = HttpMethod.Get,

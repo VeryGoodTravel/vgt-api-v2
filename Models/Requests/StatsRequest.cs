@@ -6,9 +6,4 @@ public class StatsRequest
 {
     [JsonProperty("offer_id")]
     public string OfferId { get; set; }
-
-    public StatsRequest(string id)
-    {
-        OfferId = id;
-    }
 }
