@@ -35,7 +35,7 @@ public class StatsService
         {
             Method = HttpMethod.Get,
             RequestUri = new Uri(_configurationService.StatsApiUrl + "/OfferPopularity"),
-            Content = new StringContent(id)
+            Content = new StringContent(id, Encoding.UTF8, MediaTypeNames.Text.Plain)
         };
         var response = await _httpClient.SendAsync(httpRequest);
         var content = await response.Content.ReadAsStringAsync();
