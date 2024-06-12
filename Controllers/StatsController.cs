@@ -26,6 +26,7 @@ namespace vgt_api.Controllers
             try
             {
                 var stats = await _statsService.GetStats();
+                _logger.LogInformation("Received stats from vgt-stats: {stats}", stats);
 
                 var directions = stats.Directions.Select(d => new Direction
                 {
