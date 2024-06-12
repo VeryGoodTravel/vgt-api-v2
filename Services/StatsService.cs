@@ -30,19 +30,21 @@ public class StatsService
         return JsonConvert.DeserializeObject<StatsResults>(content);
     }
 
-    public async Task<int> CheckOfferPopularity(string id)
+    public async Task<int> CheckOfferPopularity(string offer_id)
     {
-        var requestBody = new StatsRequest
+        var requestBody = new
         {
-            OfferId = id
+            offer_id
         };
         _logger.LogInformation("Sending /OfferPopularity with body: {body}", JsonConvert.SerializeObject(requestBody));
         var httpRequest = new HttpRequestMessage
         {
             Method = HttpMethod.Post,
             RequestUri = new Uri(_configurationService.StatsApiUrl + "/OfferPopularity"),
-            Content = new StringContent(JsonConvert.SerializeObject(requestBody),
-                Encoding.UTF8, MediaTypeNames.Application.Json)
+            Content = new StringContent(
+                JsonConvert.SerializeObject(requestBody),
+                Encoding.UTF8,
+                MediaTypeNames.Application.Json)
         };
         var response = await _httpClient.SendAsync(httpRequest);
         var content = await response.Content.ReadAsStringAsync();
