@@ -59,7 +59,7 @@ namespace vgt_api.Controllers
                     },
                     Maintenance = a.Maintenance.Replace("_", " "),
                     Name = a.Name.Replace("_", " "),
-                    Rating = 5.0, // ogarnac ten rating z hotelservice
+                    Rating = 0.0,
                     Room = a.Room.Replace("_", " "),
                     Transportation = a.Transportation.Replace("_", " ")
                 }).ToArray();
