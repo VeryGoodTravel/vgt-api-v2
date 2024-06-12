@@ -36,10 +36,10 @@ public class StatsService
         {
             OfferId = id
         };
-        _logger.LogInformation("Sending /OfferPopularity with body: {body}", requestBody.OfferId);
+        _logger.LogInformation("Sending /OfferPopularity with body: {body}", JsonConvert.SerializeObject(requestBody));
         var httpRequest = new HttpRequestMessage
         {
-            Method = HttpMethod.Get,
+            Method = HttpMethod.Post,
             RequestUri = new Uri(_configurationService.StatsApiUrl + "/OfferPopularity"),
             Content = new StringContent(JsonConvert.SerializeObject(requestBody),
                 Encoding.UTF8, MediaTypeNames.Application.Json)
