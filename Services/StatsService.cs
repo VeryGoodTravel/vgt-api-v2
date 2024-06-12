@@ -31,11 +31,11 @@ public class StatsService
 
     public async Task<int> CheckOfferPopularity(string id)
     {
-        var httpRequest = new HttpRequestMessage()
+        var httpRequest = new HttpRequestMessage
         {
             Method = HttpMethod.Get,
             RequestUri = new Uri(_configurationService.StatsApiUrl + "/OfferPopularity"),
-            Content = new StringContent(id, Encoding.UTF8, MediaTypeNames.Text.Plain)
+            Content = new StringContent(id, Encoding.UTF8, MediaTypeNames.Application.Json)
         };
         var response = await _httpClient.SendAsync(httpRequest);
         var content = await response.Content.ReadAsStringAsync();
