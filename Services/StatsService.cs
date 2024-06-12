@@ -1,3 +1,5 @@
+using System.Net.Mime;
+using System.Text;
 using Newtonsoft.Json;
 using vgt_api.Models.Responses;
 
@@ -29,7 +31,13 @@ public class StatsService
 
     public async Task<int> CheckOfferPopularity(string id)
     {
-        var response = await _httpClient.GetAsync(_configurationService.StatsApiUrl + "/OfferPopularity");
+        var httpRequest = new HttpRequestMessage()
+        {
+            Method = HttpMethod.Get,
+            RequestUri = new Uri(_configurationService.StatsApiUrl + "/OfferPopularity"),
+            Content = new StringContent(id)
+        };
+        var response = await _httpClient.SendAsync(httpRequest);
         var content = await response.Content.ReadAsStringAsync();
         
         _logger.LogInformation("Received offer popularity: {p}", content);
