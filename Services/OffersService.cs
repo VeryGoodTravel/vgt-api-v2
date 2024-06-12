@@ -117,12 +117,15 @@ public class OffersService
             if (cachedFlights[hotel.AirportCode] == null) continue;
             foreach (Room room in hotel.Rooms)
             {
-                if (counter++ >= offset && counter <= offset + limit)
+                foreach (string maintenance in Maintenance.RandomizeMaintenances(hotel.Name))
                 {
-                     offers.Add(new TravelOffer(
-                        true, filters, hotel, room, 
-                        cachedFlights[hotel.AirportCode]!.Item1,
-                        cachedFlights[hotel.AirportCode]!.Item2));
+                    if (counter++ >= offset && counter <= offset + limit)
+                    {
+                        offers.Add(new TravelOffer(
+                            true, filters, hotel, room, maintenance, "Plane",
+                            cachedFlights[hotel.AirportCode]!.Item1,
+                            cachedFlights[hotel.AirportCode]!.Item2));
+                    }
                 }
             }
         }
