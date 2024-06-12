@@ -33,12 +33,12 @@ namespace vgt_api.Controllers
                     Origin = new TravelLocation
                     {
                         Id = "0", // uzupelnic id z getfilters
-                        Label = d.Origin
+                        Label = d.Origin.Replace("_", " ")
                     },
                     Destination = new TravelLocation
                     {
                         Id = "0", // uzupelnic id z getfilters
-                        Label = d.Destination
+                        Label = d.Destination.Replace("_", " ")
                     }
                 }).ToArray();
 
@@ -47,13 +47,13 @@ namespace vgt_api.Controllers
                     Destination = new TravelLocation
                     {
                         Id = "0", // uzupelnic id z getfilters
-                        Label = a.Destination
+                        Label = a.Destination.Replace("_", " ")
                     },
-                    Maintenance = a.Maintenance,
-                    Name = a.Name,
+                    Maintenance = a.Maintenance.Replace("_", " "),
+                    Name = a.Name.Replace("_", " "),
                     Rating = 5.0, // ogarnac ten rating z hotelservice
-                    Room = a.Room,
-                    Transportation = a.Transportation
+                    Room = a.Room.Replace("_", " "),
+                    Transportation = a.Transportation.Replace("_", " ")
                 }).ToArray();
 
                 var response = new StatsResponse

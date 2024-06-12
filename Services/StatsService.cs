@@ -22,7 +22,7 @@ public class StatsService
         var response = await _httpClient.GetAsync(_configurationService.StatsApiUrl + "/PopularOffers");
         var content = await response.Content.ReadAsStringAsync();
         
-        _logger.LogInformation("Received popular offers: {p}", content);
+        _logger.LogInformation("Received popular offers: |{p}|", content);
         
         return JsonConvert.DeserializeObject<StatsResults>(content);
     }
