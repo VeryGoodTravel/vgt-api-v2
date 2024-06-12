@@ -12,10 +12,14 @@ namespace vgt_api.Controllers
     {
         private readonly ILogger<StatsController> _logger;
         private readonly StatsService _statsService;
+        private readonly HotelService _hotelService;
+        private readonly FlightService _flightService;
 
-        public StatsController(StatsService statsService, ILogger<StatsController> logger)
+        public StatsController(StatsService statsService, HotelService hotelService, FlightService flightService, ILogger<StatsController> logger)
         {
             _statsService = statsService;
+            _hotelService = hotelService;
+            _flightService = flightService;
             _logger = logger;
         }
 
@@ -26,18 +30,22 @@ namespace vgt_api.Controllers
             try
             {
                 var stats = await _statsService.GetStats();
+                var destinations = (await _hotelService.GetLocations()).Locations;
+                var origins = (await _flightService.GetDepartureAirports()).Airports;
                 _logger.LogInformation("Received stats from vgt-stats: {stats}", stats);
 
+                var allDestinations = destinations.SelectMany(d => d.Locations).ToList();
+                
                 var directions = stats.Directions.Select(d => new Direction
                 {
                     Origin = new TravelLocation
                     {
-                        Id = "0", // uzupelnic id z getfilters
+                        Id = origins.Find(o => o.AirportName.Equals(d.Origin.Replace("_", " ")))?.AirportCode,
                         Label = d.Origin.Replace("_", " ")
                     },
                     Destination = new TravelLocation
                     {
-                        Id = "0", // uzupelnic id z getfilters
+                        Id = allDestinations.Find(ad => ad.Label.Equals(d.Destination.Replace("_", " ")))?.Id,
                         Label = d.Destination.Replace("_", " ")
                     }
                 }).ToArray();
@@ -46,7 +54,7 @@ namespace vgt_api.Controllers
                 {
                     Destination = new TravelLocation
                     {
-                        Id = "0", // uzupelnic id z getfilters
+                        Id = allDestinations.Find(ad => ad.Label.Equals(a.Destination.Replace("_", " ")))?.Id,
                         Label = a.Destination.Replace("_", " ")
                     },
                     Maintenance = a.Maintenance.Replace("_", " "),
