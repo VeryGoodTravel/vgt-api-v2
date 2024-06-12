@@ -1,6 +1,7 @@
 using System.Net.Mime;
 using System.Text;
 using Newtonsoft.Json;
+using vgt_api.Models.Requests;
 using vgt_api.Models.Responses;
 
 namespace vgt_api.Services;
@@ -31,11 +32,13 @@ public class StatsService
 
     public async Task<int> CheckOfferPopularity(string id)
     {
+        var requestBody = new StatsRequest(id);
         var httpRequest = new HttpRequestMessage
         {
             Method = HttpMethod.Get,
             RequestUri = new Uri(_configurationService.StatsApiUrl + "/OfferPopularity"),
-            Content = new StringContent(id, Encoding.UTF8, MediaTypeNames.Application.Json)
+            Content = new StringContent(JsonConvert.SerializeObject(requestBody),
+                Encoding.UTF8, MediaTypeNames.Application.Json)
         };
         var response = await _httpClient.SendAsync(httpRequest);
         var content = await response.Content.ReadAsStringAsync();
