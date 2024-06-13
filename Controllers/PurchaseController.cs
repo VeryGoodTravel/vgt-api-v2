@@ -147,7 +147,7 @@ namespace vgt_api.Controllers
                 _backendToSaga.BasicPublish(string.Empty, "backend-to-saga-queue", null, bodyBytes);
                 
                 // listen for reply with same transactionId
-                var timeout = 60;
+                var timeout = 90;
                 SagaReply sagaResponse;
                 while (timeout > 0)
                 {
