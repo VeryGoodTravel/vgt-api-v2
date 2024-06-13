@@ -33,8 +33,8 @@ public class Accommodation
             },
             Name = "Warwick New York",
             Room = "Double",
-            Transportation = "Plane",
-            Maintenance = "All inclusive",
+            Transportation = "Samolot",
+            Maintenance = "All Inclusive",
             Rating = 4.5
         };
     }

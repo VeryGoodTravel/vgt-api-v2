@@ -119,7 +119,7 @@ public class OffersService
                     if (counter++ >= offset && counter <= offset + limit)
                     {
                         offers.Add(new TravelOffer(
-                            true, filters, hotel, room, maintenance, "Plane",
+                            true, filters, hotel, room, maintenance, "Samolot",
                             cachedFlights[hotel.AirportCode]!.Item1,
                             cachedFlights[hotel.AirportCode]!.Item2));
                     }

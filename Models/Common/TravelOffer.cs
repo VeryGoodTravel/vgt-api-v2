@@ -69,7 +69,7 @@ namespace vgt_api.Models.Common
             
             var ratingNames = room != null ? new[] { hotel.Name, room.Name } : new[] { hotel.Name };
             Rating = Common.Rating.CombineRandomizeRating(ratingNames);
-            Room = room?.Name ?? "No room information";
+            Room = room?.Name ?? "Brak informacji";
             Image = _configuration["Offer:Image"];
             RecentlyPurchased = 0;
         }
@@ -152,14 +152,14 @@ namespace vgt_api.Models.Common
                 },
                 Id = guid.ToString(),
                 Name = guid.ToString(),
-                Maintenance = "All inclusive",
+                Maintenance = "All Inclusive",
                 Price = new Price
                 {
                     Value = 3000,
                     Currency = "USD"
                 },
                 Rating = 4.5,
-                Transportation = "Plane",
+                Transportation = "Samolot",
                 Room = "Double",
                 RecentlyPurchased = 1
             };

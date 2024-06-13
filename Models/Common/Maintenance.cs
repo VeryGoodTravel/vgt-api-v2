@@ -7,9 +7,9 @@ public class Maintenance
 {
     private static readonly string[] Maintenances =
     {
-        "All Inclusive",
-        "Breakfast",
-        "No maintenance"
+        "Wszystko w cenie",
+        "Śniadanie",
+        "Bez wyżywienia"
     };
 
     public static double GetMaintenanceModifier(string maintenance)

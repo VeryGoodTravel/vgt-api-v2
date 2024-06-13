@@ -88,9 +88,9 @@ public class IdFilters
             Children18 = int.Parse(parts[11]),
             Children10 = int.Parse(parts[12]),
             Children3 = int.Parse(parts[13]),
-            DestinationCity = parts[14],
-            Maintenance = parts[15],
-            Transportation = parts[16]
+            DestinationCity = parts[14].Replace("_", " "),
+            Maintenance = parts[15].Replace("_", " "),
+            Transportation = parts[16].Replace("_", " ")
         };
     }
 }
