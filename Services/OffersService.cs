@@ -75,21 +75,18 @@ public class OffersService
         var hotelsRequest = filters.ToHotelsRequest();
         var numberOfParticipants = filters.Participants.Sum(x => x.Value);
 
-        List<string>? codes = null;
-        filters.Origins?.TryGetValue("", out codes);
-        
         var flightsToRequest = new FlightsRequest()
         {
             DepartureDate = filters.Dates.Start,
             ArrivalAirportCodes = new(),
-            DepartureAirportCodes = codes,
+            DepartureAirportCodes = filters.Origins,
             NumberOfPassengers = numberOfParticipants
         };
         
         var flightsFromRequest = new FlightsRequest()
         {
             DepartureDate = filters.Dates.End,
-            ArrivalAirportCodes = codes,
+            ArrivalAirportCodes = filters.Origins,
             DepartureAirportCodes = new(),
             NumberOfPassengers = numberOfParticipants
         };
