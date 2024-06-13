@@ -22,8 +22,8 @@ namespace vgt_api.Controllers
             _offersService = offersService;
         }
 
-        [HttpGet]
-        public async Task<Envelope<SearchResults>> Search([FromQuery] SearchFilters request)
+        [HttpPost]
+        public async Task<Envelope<SearchResults>> Search([FromBody] SearchFilters request)
         {
             _logger.LogInformation("Received GetOfferPage request: {request}",
                 JsonConvert.SerializeObject(request));
